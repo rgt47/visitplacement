@@ -1,0 +1,14 @@
+Package: visitplacement
+Title: Optimal Visit Placement in Longitudinal Clinical Trials
+Version: 0.0.0.9000
+Authors@R:
+    person("Ronald G.", "Thomas", email = "rthomas@ucsd.edu", role = c("aut", "cre"))
+Description: Methodology for optimal visit timing and placement in longitudinal clinical trials to maximize statistical efficiency.
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.0
+Imports:
+    renv,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
