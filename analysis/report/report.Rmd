@@ -1,7 +1,7 @@
 ---
 title: "Optimal Visit Placement in Longitudinal Trials"
 subtitle: "A Simulation Study Comparing Equal and Clustered Designs"
-author: "R.G. Thomas"
+author: "Ronald G. Thomas, Ph.D."
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 fontsize: 11pt
 geometry: "left=3cm,right=5cm,top=2cm,bottom=2cm"
