@@ -50,8 +50,8 @@ options(scipen = 1, digits = 3)
 
 In longitudinal clinical trials, subjects are measured repeatedly
 over a fixed study period. The conventional approach assigns
-observation times at equally spaced intervals -- for example,
-monthly or quarterly visits -- largely for administrative
+observation times at equally spaced intervals (for example,
+monthly or quarterly visits) largely for administrative
 convenience rather than statistical efficiency. A growing body
 of work in optimal experimental design demonstrates that the
 placement of these observation times can substantially affect
