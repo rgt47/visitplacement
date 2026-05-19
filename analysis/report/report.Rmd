@@ -48,14 +48,17 @@ options(scipen = 1, digits = 3)
 
 # Introduction
 
-In longitudinal clinical trials, subjects are measured repeatedly
-over a fixed study period. The conventional approach assigns
-observation times at equally spaced intervals (for example,
-monthly or quarterly visits) largely for administrative
+In longitudinal clinical trials, subjects are measured
+repeatedly over a fixed study period. The conventional approach
+assigns observation times at equally spaced intervals (monthly
+or quarterly visits, for example) largely for administrative
 convenience rather than statistical efficiency. A growing body
-of work in optimal experimental design demonstrates that the
+of work in optimal experimental design suggests that the
 placement of these observation times can substantially affect
-the precision with which treatment effects are estimated.
+the precision with which treatment effects are estimated. We
+begin in Section 1.1 with a review of the relevant literature
+and then describe the simulation study and its results in
+Sections 2 and 3.
 
 ## Optimal allocation of observation times
 
@@ -112,10 +115,10 @@ From a more pragmatic perspective, @vickers2003howmany examined
 the marginal benefit of adding repeated measures in terms of
 statistical power. He showed that while repeating assessments
 can have dramatic effects on power, the marginal benefit of each
-additional measure decreases rapidly. There is little value in
-exceeding four post-treatment assessments (or seven total
-including baseline), except when correlations between measures
-are low, as in episodic conditions.
+additional measure decreases rapidly. In general, there is little value in exceeding four
+post-treatment assessments (or seven total including baseline),
+except when correlations between measures are low, as in
+episodic conditions.
 
 ## Extensions and related work
 
@@ -152,13 +155,13 @@ disease-modifying treatment effects.
 
 ## Present study
 
-Despite the theoretical optimality results, there remains
-limited simulation-based evidence illustrating how different
-visit schedules perform in finite samples under realistic data
-generating mechanisms. In this report, we conduct a simple
-Monte Carlo study to compare two five-visit designs for a
-100-patient, two-arm longitudinal trial with linearly divergent
-treatment effects:
+Despite the theoretical optimality results, limited
+simulation-based evidence exists on how different visit
+schedules perform in finite samples under realistic data-
+generating mechanisms. In this report, we present a Monte
+Carlo study comparing two five-visit designs for a 100-patient,
+two-arm longitudinal trial with linearly divergent treatment
+effects:
 
 - **Equal spacing:** observations at months 0, 6, 12, 18, and 24.
 - **Clustered spacing:** observations clustered near the
@@ -472,12 +475,13 @@ se_clust <- summary_df$empirical_se[
 ]
 ```
 
-The equal-spacing design achieves an empirical power of
-`r sprintf("%.1f%%", 100 * power_equal)`, compared with
-`r sprintf("%.1f%%", 100 * power_clust)` for the clustered design.
-The empirical standard error of $\hat{\beta}_3$ is
-`r sprintf("%.4f", se_equal)` under equal spacing and
-`r sprintf("%.4f", se_clust)` under the clustered design.
+We observe that the equal-spacing design achieves an empirical
+power of `r sprintf("%.1f%%", 100 * power_equal)`, compared
+with `r sprintf("%.1f%%", 100 * power_clust)` for the
+clustered design. The empirical standard error of
+$\hat{\beta}_3$ is `r sprintf("%.4f", se_equal)` under equal
+spacing and `r sprintf("%.4f", se_clust)` under the clustered
+design.
 
 ## Distribution of estimates
 
@@ -574,39 +578,45 @@ ggplot() +
 
 # Discussion
 
-This simulation study illustrates the practical consequences of
-visit placement in longitudinal clinical trials. Both designs use
-the same number of subjects and the same number of visits; they
-differ only in the timing of observations.
+In this study, we have endeavored to illustrate the practical
+consequences of visit placement in longitudinal clinical trials.
+Both designs use the same number of subjects and the same number
+of visits; they differ only in the timing of observations.
 
-The results are broadly consistent with the theoretical findings
-of @winkensOptimalTimepointsClinical2005. When the data generating
-mechanism includes both random slopes and independent residual
-error -- a structure that combines features of compound symmetry
-and AR(1) with measurement error -- the clustered design, which
-concentrates observations near the boundaries of the study period,
-can yield different precision for the treatment-by-time interaction
-compared with equal spacing.
+The results are, in general, broadly consistent with the
+theoretical findings of @winkensOptimalTimepointsClinical2005.
+When the data-generating mechanism includes both random slopes
+and independent residual error -- a structure that combines
+features of compound symmetry and AR(1) with measurement error
+-- the clustered design, which concentrates observations near
+the boundaries of the study period, appears to yield different
+precision for the treatment-by-time interaction compared with
+equal spacing.
 
-Several caveats apply. First, we assumed complete data with no
-dropout. In practice, attrition is common in longitudinal trials
-and may differentially affect designs that place observations at
-extreme time-points. Second, the data generating model used
-independent random effects and homoscedastic residuals; more
-complex covariance structures (e.g., heterogeneous variances,
-serial correlation in residuals) could alter the relative
-performance of the two designs. Third, we considered only a
-linear treatment effect; @winkens2007polynomial showed that
-optimal designs differ for polynomial effects of higher order.
+Several caveats warrant mention. First, we assumed complete data
+with no dropout. In practice, attrition is common in
+longitudinal trials and may differentially affect designs that
+place observations at extreme time-points. Second, the data-
+generating model used independent random effects and
+homoscedastic residuals; more complex covariance structures
+(e.g., heterogeneous variances, serial correlation in residuals)
+could alter the relative performance of the two designs. Third,
+we considered only a linear treatment effect;
+@winkens2007polynomial showed that optimal designs differ for
+polynomial effects of higher order.
 
-Future work should investigate the robustness of these findings
-to dropout, misspecification of the covariance structure, and
-nonlinear treatment trajectories. The framework of
-@ouwens2002maximin for maximin D-optimal designs provides one
-principled approach to robust design when the covariance structure
-is uncertain. Bayesian approaches, as in @abebe2014bayesian,
-offer another avenue for incorporating prior uncertainty about
-model parameters into the design optimization.
+In conclusion, three points merit emphasis. First, the placement
+of observation times in a longitudinal trial is a design
+decision with real consequences for statistical efficiency, and
+the default of equal spacing is not in general optimal. Second,
+the form of the covariance structure is critical: results that
+hold under compound symmetry may not carry over to random-slope
+models or AR(1) structures. Third, the robustness of these
+findings to dropout, covariance misspecification, and nonlinear
+treatment trajectories remains to be investigated. The maximin
+D-optimal framework of @ouwens2002maximin and the Bayesian
+approach of @abebe2014bayesian provide principled starting
+points for that work.
 
 
 # References
