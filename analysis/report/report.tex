@@ -5,7 +5,7 @@
   11pt,
 ]{article}
 \usepackage{xcolor}
-\usepackage[left=3cm,right=5cm,top=2cm,bottom=2cm]{geometry}
+\usepackage[left=3cm,right=3cm,top=2.5cm,bottom=2.5cm]{geometry}
 \usepackage{amsmath,amssymb}
 \setcounter{secnumdepth}{5}
 \usepackage{iftex}
@@ -28,6 +28,7 @@
   \usepackage[]{microtype}
   \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
+\usepackage{setspace}
 \makeatletter
 \@ifundefined{KOMAClassName}{% if non-KOMA class
   \IfFileExists{parskip.sty}{%
@@ -38,6 +39,19 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{caption}
+\captionsetup[table]{skip=6pt}
+\newcounter{none} % for unnumbered tables
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
 \newsavebox\pandoc@box
@@ -89,6 +103,51 @@
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+%% tools/stamp.tex
+%% Provenance footer for PDFs rendered from this project.
+%% Vendored by zzcollab; this file is not project-specific. The
+%% footer prints the source document and the time of rendering.
+%% The git version is defined here too, and so is available to a
+%% project that wants it on the page, but it is left off the
+%% default footer: it already names the staged copy in share/ and
+%% appears in its manifest row. All values are supplied at render
+%% time by tools/stamp-render.R, which writes a small generated
+%% file that redefines the macros below. The \providecommand
+%% defaults keep a bare LaTeX compile working when the document is
+%% built without the wrapper.
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\providecommand{\stampsource}{\detokenize{(source not recorded)}}
+\providecommand{\stamptime}{(time not recorded)}
+\providecommand{\stampversion}{\detokenize{(version not recorded)}}
+\setlength{\footskip}{40pt}
+\newcommand{\stampfootcontent}{%
+  \footnotesize\color{gray}%
+  \parbox[b]{\textwidth}{%
+    \stamptime\hfill\thepage\\[2pt]%
+    \ttfamily\raggedright\stampsource}}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\stampfootcontent}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.4pt}
+%% The title page uses the `plain` page style; redefine it so the
+%% stamp appears there too.
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\stampfootcontent}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0.4pt}}
+\renewcommand{\stampsource}{\textasciitilde{}/\allowbreak{}prj/\allowbreak{}res/\allowbreak{}05-optimal-visit-placement/\allowbreak{}visitplacement/\allowbreak{}analysis/\allowbreak{}report/\allowbreak{}report.Rmd}
+\renewcommand{\stamptime}{2026-08-15 16:33 PDT}
+\renewcommand{\stampversion}{\detokenize{ea19a49}}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage[mathlines]{lineno}
+\linenumbers
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
@@ -106,6 +165,10 @@
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
 \hypersetup{
   pdftitle={Optimal Visit Placement in Longitudinal Trials},
   pdfauthor={Ronald G. Thomas, Ph.D.},
@@ -113,16 +176,8 @@
   pdfcreator={LaTeX via pandoc}}
 
 \title{Optimal Visit Placement in Longitudinal Trials}
-\usepackage{etoolbox}
-\makeatletter
-\providecommand{\subtitle}[1]{% add subtitle to \maketitle
-  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
-}
-\makeatother
-\subtitle{A Simulation Study Comparing Equal and Clustered Designs}
-\author{Ronald G. Thomas,
-Ph.D.\thanks{Wertheim School of Public Health, UCSD; ORCID: 0000-0003-1686-4965}}
-\date{May 11, 2026}
+\author{Ronald G. Thomas, Ph.D.\thanks{Wertheim School of Public Health, UCSD; ORCID: 0000-0003-1686-4965}}
+\date{August 15, 2026}
 
 \begin{document}
 \maketitle
@@ -131,139 +186,134 @@ Ph.D.\thanks{Wertheim School of Public Health, UCSD; ORCID: 0000-0003-1686-4965}
 \setcounter{tocdepth}{2}
 \tableofcontents
 }
+\setstretch{1.1}
 \section{Introduction}\label{introduction}
 
-In longitudinal clinical trials, subjects are measured repeatedly over a
-fixed study period. The conventional approach assigns observation times
-at equally spaced intervals -- for example, monthly or quarterly visits
--- largely for administrative convenience rather than statistical
-efficiency. A growing body of work in optimal experimental design
-demonstrates that the placement of these observation times can
-substantially affect the precision with which treatment effects are
-estimated.
+In longitudinal clinical trials, subjects are measured
+repeatedly over a fixed study period. The conventional approach
+assigns observation times at equally spaced intervals (monthly
+or quarterly visits, for example) largely for administrative
+convenience rather than statistical efficiency. A growing body
+of work in optimal experimental design suggests that the
+placement of these observation times can substantially affect
+the precision with which treatment effects are estimated. We
+begin in Section 1.1 with a review of the relevant literature
+and then describe the simulation study and its results in
+Sections 2 and 3.
 
-\subsection{Optimal allocation of observation
-times}\label{optimal-allocation-of-observation-times}
+\subsection{Optimal allocation of observation times}\label{optimal-allocation-of-observation-times}
 
-\textsuperscript{\citeproc{ref-winkensOptimalTimepointsClinical2005}{1}}
-provided the foundational analysis of this problem for two-group trials
-with linearly divergent treatment effects. They showed that the optimal
-allocation of time-points depends critically on the assumed covariance
-structure. Under compound symmetry (CS), efficiency improves by
-clustering repeated measures near the end of the study period, where the
-treatment effect is largest. Under a first-order autoregressive (AR(1))
-structure, only two measurements -- at baseline and at study end -- are
-needed for highly efficient estimation. Under a more realistic AR(1)
-plus measurement error structure, the optimal spacing depends on the
-specific covariance parameter values, but the equally spaced design is
-generally suboptimal.
+\textsuperscript{\citeproc{ref-winkensOptimalTimepointsClinical2005}{1}} provided the foundational
+analysis of this problem for two-group trials with linearly
+divergent treatment effects. They showed that the optimal
+allocation of time-points depends critically on the assumed
+covariance structure. Under compound symmetry (CS), efficiency
+improves by clustering repeated measures near the end of the
+study period, where the treatment effect is largest. Under a
+first-order autoregressive (AR(1)) structure, only two
+measurements -- at baseline and at study end -- are needed for
+highly efficient estimation. Under a more realistic AR(1) plus
+measurement error structure, the optimal spacing depends on the
+specific covariance parameter values, but the equally spaced
+design is generally suboptimal.
 
-In a companion
-paper,\textsuperscript{\citeproc{ref-winkensOptimalNumberRepeated2006}{2}}
-extended these results to address the joint optimization of the number
-of repeated measures and group sizes under budget constraints. They
-found that when budget is fixed and the covariance structure includes an
-autoregressive component, two repeated measures per subject often yield
-highly efficient treatment effect estimators. Otherwise, intermediate
-measures can reduce the variance of the generalized least squares (GLS)
-estimator, particularly under compound symmetry.
+In a companion paper,\textsuperscript{\citeproc{ref-winkensOptimalNumberRepeated2006}{2}} extended
+these results to address the joint optimization of the number
+of repeated measures and group sizes under budget constraints.
+They found that when budget is fixed and the covariance structure
+includes an autoregressive component, two repeated measures per
+subject often yield highly efficient treatment effect estimators.
+Otherwise, intermediate measures can reduce the variance of the
+generalized least squares (GLS) estimator, particularly under
+compound symmetry.
 
-\subsection{Design criteria and cost
-considerations}\label{design-criteria-and-cost-considerations}
+\subsection{Design criteria and cost considerations}\label{design-criteria-and-cost-considerations}
 
-The formal framework for these results relies on classical optimal
-design theory, as developed
-by\textsuperscript{\citeproc{ref-atkinson1992optimum}{3}}.\textsuperscript{\citeproc{ref-ouwens2002maximin}{4}}
-proposed maximin D-optimal designs for longitudinal mixed effects
-models, computing optimal allocations of time-points for polynomial
-trend models with random intercepts, random slopes, and AR(1) serial
-correlations. Because D-optimal designs depend on unknown parameter
-values, the maximin criterion provides robustness by maximizing the
-worst-case relative efficiency across the parameter space.
+The formal framework for these results relies on classical
+optimal design theory, as developed by\textsuperscript{\citeproc{ref-atkinson1992optimum}{3}}.\textsuperscript{\citeproc{ref-ouwens2002maximin}{4}} proposed maximin D-optimal designs for
+longitudinal mixed effects models, computing optimal allocations
+of time-points for polynomial trend models with random
+intercepts, random slopes, and AR(1) serial correlations. Because
+D-optimal designs depend on unknown parameter values, the
+maximin criterion provides robustness by maximizing the worst-case
+relative efficiency across the parameter space.
 
-\textsuperscript{\citeproc{ref-tekle2008doptimal}{5}} extended this work
-to cohort designs, showing that a purely longitudinal design with a
-single cohort measured at optimal time-points is generally more
-efficient than mixed longitudinal-cross-sectional designs. Their
-numerical results demonstrated that the most efficient number of
-repeated measurements equals the sum of the number of cohorts and the
-degree of the polynomial trend.
-Subsequently,\textsuperscript{\citeproc{ref-tekle2011cohorts}{6}} showed
-that adding cohorts or repeated measurements beyond this optimum wastes
-resources when the study budget is fixed.
+\textsuperscript{\citeproc{ref-tekle2008doptimal}{5}} extended this work to cohort designs, showing
+that a purely longitudinal design with a single cohort measured
+at optimal time-points is generally more efficient than mixed
+longitudinal-cross-sectional designs. Their numerical results
+demonstrated that the most efficient number of repeated
+measurements equals the sum of the number of cohorts and the
+degree of the polynomial trend. Subsequently,\textsuperscript{\citeproc{ref-tekle2011cohorts}{6}} showed that adding cohorts or repeated
+measurements beyond this optimum wastes resources when the study
+budget is fixed.
 
-\subsection{Practical guidance on the number of
-measures}\label{practical-guidance-on-the-number-of-measures}
+\subsection{Practical guidance on the number of measures}\label{practical-guidance-on-the-number-of-measures}
 
-From a more pragmatic
-perspective,\textsuperscript{\citeproc{ref-vickers2003howmany}{7}}
-examined the marginal benefit of adding repeated measures in terms of
-statistical power. He showed that while repeating assessments can have
-dramatic effects on power, the marginal benefit of each additional
-measure decreases rapidly. There is little value in exceeding four
-post-treatment assessments (or seven total including baseline), except
-when correlations between measures are low, as in episodic conditions.
+From a more pragmatic perspective,\textsuperscript{\citeproc{ref-vickers2003howmany}{7}} examined
+the marginal benefit of adding repeated measures in terms of
+statistical power. He showed that while repeating assessments
+can have dramatic effects on power, the marginal benefit of each
+additional measure decreases rapidly. In general, there is little value in exceeding four
+post-treatment assessments (or seven total including baseline),
+except when correlations between measures are low, as in
+episodic conditions.
 
-\subsection{Extensions and related
-work}\label{extensions-and-related-work}
+\subsection{Extensions and related work}\label{extensions-and-related-work}
 
-Several extensions of the Winkens framework have
-appeared.\textsuperscript{\citeproc{ref-winkens2007polynomial}{8}}
-generalized the optimal design results to second-order polynomial
-treatment effects, finding that equidistant time-points are either
-optimal or highly efficient when only three measures are
-taken.\textsuperscript{\citeproc{ref-candel2008empirical}{9}}
-investigated optimal designs when the goal is to estimate individual
-growth curves (random effects) rather than fixed effects, showing that
-the optimal number of time-points and subjects differs from the
-fixed-effects
-case.\textsuperscript{\citeproc{ref-abebe2014bayesian}{10}} developed
-Bayesian D-optimal designs for dichotomous repeated measures with
-autocorrelation, formally accounting for parameter uncertainty through
-prior distributions.
+Several extensions of the Winkens framework have appeared.\textsuperscript{\citeproc{ref-winkens2007polynomial}{8}} generalized the optimal design results to
+second-order polynomial treatment effects, finding that equidistant
+time-points are either optimal or highly efficient when only three
+measures are taken.\textsuperscript{\citeproc{ref-candel2008empirical}{9}} investigated optimal
+designs when the goal is to estimate individual growth curves
+(random effects) rather than fixed effects, showing that the
+optimal number of time-points and subjects differs from the
+fixed-effects case.\textsuperscript{\citeproc{ref-abebe2014bayesian}{10}} developed Bayesian
+D-optimal designs for dichotomous repeated measures with
+autocorrelation, formally accounting for parameter uncertainty
+through prior distributions.
 
-For the analysis of unequally spaced longitudinal
-data,\textsuperscript{\citeproc{ref-jones1991unequally}{11}} provided
-the statistical machinery for fitting mixed models with continuous-time
-AR(1) structures and arbitrary observation schedules. Their approach,
-based on the Kalman filter, remains foundational for analyzing data from
+For the analysis of unequally spaced longitudinal data,\textsuperscript{\citeproc{ref-jones1991unequally}{11}} provided the statistical machinery for
+fitting mixed models with continuous-time AR(1) structures and
+arbitrary observation schedules. Their approach, based on the
+Kalman filter, remains foundational for analyzing data from
 designs with non-equidistant time-points.
 
-\subsection{Power and sample size
-tools}\label{power-and-sample-size-tools}
+\subsection{Power and sample size tools}\label{power-and-sample-size-tools}
 
-Modern software for power and sample size calculations in longitudinal
-trials has made these design considerations more
-accessible.\textsuperscript{\citeproc{ref-iddi2022longpower}{12}}
-describe the \texttt{longpower} R package, which implements closed-form
-power calculations for linear mixed
-models.\textsuperscript{\citeproc{ref-donohue2010power}{13}} applied
-these methods to Alzheimer's disease Phase II trial design,
-demonstrating the practical impact of design choices on the ability to
-detect disease-modifying treatment effects.
+Modern software for power and sample size calculations in
+longitudinal trials has made these design considerations more
+accessible.\textsuperscript{\citeproc{ref-iddi2022longpower}{12}} describe the \texttt{longpower} R
+package, which implements closed-form power calculations for
+linear mixed models.\textsuperscript{\citeproc{ref-donohue2010power}{13}} applied these methods
+to Alzheimer's disease Phase II trial design, demonstrating
+the practical impact of design choices on the ability to detect
+disease-modifying treatment effects.
 
 \subsection{Present study}\label{present-study}
 
-Despite the theoretical optimality results, there remains limited
-simulation-based evidence illustrating how different visit schedules
-perform in finite samples under realistic data generating mechanisms. In
-this report, we conduct a simple Monte Carlo study to compare two
-five-visit designs for a 100-patient, two-arm longitudinal trial with
-linearly divergent treatment effects:
+Despite the theoretical optimality results, limited
+simulation-based evidence exists on how different visit
+schedules perform in finite samples under realistic data-
+generating mechanisms. In this report, we present a Monte
+Carlo study comparing two five-visit designs for a 100-patient,
+two-arm longitudinal trial with linearly divergent treatment
+effects:
 
 \begin{itemize}
 \tightlist
 \item
   \textbf{Equal spacing:} observations at months 0, 6, 12, 18, and 24.
 \item
-  \textbf{Clustered spacing:} observations clustered near the beginning
-  and end of the study period (months 0, 2, 4, 20, 24), motivated by the
-  theoretical result that under compound symmetry, efficiency is gained
-  by concentrating measures where the treatment effect is largest.
+  \textbf{Clustered spacing:} observations clustered near the
+  beginning and end of the study period (months 0, 2, 4, 20, 24),
+  motivated by the theoretical result that under compound
+  symmetry, efficiency is gained by concentrating measures where
+  the treatment effect is largest.
 \end{itemize}
 
-We evaluate the designs in terms of bias, standard error, power, and
-coverage of 95\% confidence intervals for the treatment-by-time
+We evaluate the designs in terms of bias, standard error, power,
+and coverage of 95\% confidence intervals for the treatment-by-time
 interaction.
 
 \section{Methods}\label{methods}
@@ -282,20 +332,20 @@ Y_{ij} = (\beta_0 + b_{0i}) +
          \varepsilon_{ij}
 \]
 
-where \(G_i \in \{0, 1\}\) is the treatment group indicator, \(b_{0i}\)
-and \(b_{1i}\) are subject-specific random effects with
-\(\text{Var}(b_0) = \tau_0^2\), \(\text{Var}(b_1) = \tau_1^2\),
+where \(G_i \in \{0, 1\}\) is the treatment group indicator,
+\(b_{0i}\) and \(b_{1i}\) are subject-specific random effects
+with \(\text{Var}(b_0) = \tau_0^2\), \(\text{Var}(b_1) = \tau_1^2\),
 \(\text{Cov}(b_0, b_1) = \tau_{01}\), and
 \(\varepsilon_{ij} \sim N(0, \sigma^2)\).
 
 The parameter of interest is \(\beta_3\), the treatment-by-time
-interaction, which represents the rate at which the treatment effect
-diverges from the control effect per unit time.
+interaction, which represents the rate at which the treatment
+effect diverges from the control effect per unit time.
 
 \subsection{Parameter values}\label{parameter-values}
 
-We use the following parameter values, broadly motivated by cognitive
-decline trials:
+We use the following parameter values, broadly motivated by
+cognitive decline trials:
 
 \begin{table}[!h]
 \centering
@@ -321,10 +371,11 @@ Number of simulations & -- & 2000.0\\
 \end{tabular}
 \end{table}
 
-The treatment-by-time interaction \(\beta_3 = 0.5\) implies that the
-treatment group improves (or declines less) by 0.5 units per month
-relative to control, yielding a cumulative treatment advantage of 12
-units over 24 months.
+The treatment-by-time interaction \(\beta_3 = 0.5\) implies that
+the treatment group improves (or declines less) by 0.5 units per
+month relative to control, yielding a cumulative treatment
+advantage of 12 units over 24
+months.
 
 \subsection{Design specifications}\label{design-specifications}
 
@@ -351,10 +402,11 @@ For each of 2000 Monte Carlo replications, we:
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Generate 100 subjects, randomized 1:1 to treatment and control.
+  Generate 100 subjects, randomized 1:1 to treatment
+  and control.
 \item
-  Simulate longitudinal outcomes at the five visit times for each design
-  using the data generating model above.
+  Simulate longitudinal outcomes at the five visit times for each
+  design using the data generating model above.
 \item
   Fit a linear mixed model (random intercepts and slopes) using
   restricted maximum likelihood (REML) via \texttt{nlme::lme()}.
@@ -400,10 +452,13 @@ Equal & 2000 & 0.498 & -0.002 & 0.0671 & 0.0676 & 1 & 0.948\\
 \end{tabular}}
 \end{table}
 
-The equal-spacing design achieves an empirical power of 100.0\%,
-compared with 100.0\% for the clustered design. The empirical standard
-error of \(\hat{\beta}_3\) is 0.0671 under equal spacing and 0.0650
-under the clustered design.
+We observe that the equal-spacing design achieves an empirical
+power of 100.0\%, compared
+with 100.0\% for the
+clustered design. The empirical standard error of
+\(\hat{\beta}_3\) is 0.0671 under equal
+spacing and 0.0650 under the clustered
+design.
 
 \subsection{Distribution of estimates}\label{distribution-of-estimates}
 
@@ -416,8 +471,7 @@ under the clustered design.
 \caption{Sampling distribution of the treatment-by-time interaction estimate under each design.}\label{fig:density-plot}
 \end{figure}
 
-\subsection{Standard errors across
-simulations}\label{standard-errors-across-simulations}
+\subsection{Standard errors across simulations}\label{standard-errors-across-simulations}
 
 \begin{figure}
 
@@ -441,40 +495,44 @@ simulations}\label{standard-errors-across-simulations}
 
 \section{Discussion}\label{discussion}
 
-This simulation study illustrates the practical consequences of visit
-placement in longitudinal clinical trials. Both designs use the same
-number of subjects and the same number of visits; they differ only in
-the timing of observations.
+In this study, we have endeavored to illustrate the practical
+consequences of visit placement in longitudinal clinical trials.
+Both designs use the same number of subjects and the same number
+of visits; they differ only in the timing of observations.
 
-The results are broadly consistent with the theoretical findings
-of\textsuperscript{\citeproc{ref-winkensOptimalTimepointsClinical2005}{1}}.
-When the data generating mechanism includes both random slopes and
-independent residual error -- a structure that combines features of
-compound symmetry and AR(1) with measurement error -- the clustered
-design, which concentrates observations near the boundaries of the study
-period, can yield different precision for the treatment-by-time
-interaction compared with equal spacing.
+The results are, in general, broadly consistent with the
+theoretical findings of\textsuperscript{\citeproc{ref-winkensOptimalTimepointsClinical2005}{1}}.
+When the data-generating mechanism includes both random slopes
+and independent residual error -- a structure that combines
+features of compound symmetry and AR(1) with measurement error
+-- the clustered design, which concentrates observations near
+the boundaries of the study period, appears to yield different
+precision for the treatment-by-time interaction compared with
+equal spacing.
 
-Several caveats apply. First, we assumed complete data with no dropout.
-In practice, attrition is common in longitudinal trials and may
-differentially affect designs that place observations at extreme
-time-points. Second, the data generating model used independent random
-effects and homoscedastic residuals; more complex covariance structures
-(e.g., heterogeneous variances, serial correlation in residuals) could
-alter the relative performance of the two designs. Third, we considered
-only a linear treatment
-effect;\textsuperscript{\citeproc{ref-winkens2007polynomial}{8}} showed
-that optimal designs differ for polynomial effects of higher order.
+Several caveats warrant mention. First, we assumed complete data
+with no dropout. In practice, attrition is common in
+longitudinal trials and may differentially affect designs that
+place observations at extreme time-points. Second, the data-
+generating model used independent random effects and
+homoscedastic residuals; more complex covariance structures
+(e.g., heterogeneous variances, serial correlation in residuals)
+could alter the relative performance of the two designs. Third,
+we considered only a linear treatment effect;\textsuperscript{\citeproc{ref-winkens2007polynomial}{8}} showed that optimal designs differ for
+polynomial effects of higher order.
 
-Future work should investigate the robustness of these findings to
-dropout, misspecification of the covariance structure, and nonlinear
-treatment trajectories. The framework
-of\textsuperscript{\citeproc{ref-ouwens2002maximin}{4}} for maximin
-D-optimal designs provides one principled approach to robust design when
-the covariance structure is uncertain. Bayesian approaches, as
-in\textsuperscript{\citeproc{ref-abebe2014bayesian}{10}}, offer another
-avenue for incorporating prior uncertainty about model parameters into
-the design optimization.
+In conclusion, three points merit emphasis. First, the placement
+of observation times in a longitudinal trial is a design
+decision with real consequences for statistical efficiency, and
+the default of equal spacing is not in general optimal. Second,
+the form of the covariance structure is critical: results that
+hold under compound symmetry may not carry over to random-slope
+models or AR(1) structures. Third, the robustness of these
+findings to dropout, covariance misspecification, and nonlinear
+treatment trajectories remains to be investigated. The maximin
+D-optimal framework of\textsuperscript{\citeproc{ref-ouwens2002maximin}{4}} and the Bayesian
+approach of\textsuperscript{\citeproc{ref-abebe2014bayesian}{10}} provide principled starting
+points for that work.
 
 \section{References}\label{references}
 
@@ -482,103 +540,56 @@ the design optimization.
 \begin{CSLReferences}{0}{1}
 \bibitem[\citeproctext]{ref-winkensOptimalTimepointsClinical2005}
 \CSLLeftMargin{1. }%
-\CSLRightInline{{Winkens B, Schouten HJA, van Breukelen GJP, Berger
-MPF}. Optimal time-points in clinical trials with linearly divergent
-treatment effects. \emph{Statistics in Medicine}. 2005;24(24):3743-3756.
-doi:\href{https://doi.org/10.1002/sim.2385}{10.1002/sim.2385}}
+\CSLRightInline{{Winkens B, Schouten HJA, van Breukelen GJP, Berger MPF}. Optimal time-points in clinical trials with linearly divergent treatment effects. \emph{Statistics in Medicine}. 2005;24(24):3743-3756. doi:\href{https://doi.org/10.1002/sim.2385}{10.1002/sim.2385}}
 
 \bibitem[\citeproctext]{ref-winkensOptimalNumberRepeated2006}
 \CSLLeftMargin{2. }%
-\CSLRightInline{{Winkens B, Schouten HJA, van Breukelen GJP, Berger
-MPF}. Optimal number of repeated measures and group sizes in clinical
-trials with linearly divergent treatment effects. \emph{Contemporary
-Clinical Trials}. 2006;27(1):57-69.
-doi:\href{https://doi.org/10.1016/j.cct.2005.09.005}{10.1016/j.cct.2005.09.005}}
+\CSLRightInline{{Winkens B, Schouten HJA, van Breukelen GJP, Berger MPF}. Optimal number of repeated measures and group sizes in clinical trials with linearly divergent treatment effects. \emph{Contemporary Clinical Trials}. 2006;27(1):57-69. doi:\href{https://doi.org/10.1016/j.cct.2005.09.005}{10.1016/j.cct.2005.09.005}}
 
 \bibitem[\citeproctext]{ref-atkinson1992optimum}
 \CSLLeftMargin{3. }%
-\CSLRightInline{Atkinson AC, Donev AN. \emph{Optimum Experimental
-Designs}. Clarendon Press; 1992.}
+\CSLRightInline{Atkinson AC, Donev AN. \emph{Optimum Experimental Designs}. Clarendon Press; 1992.}
 
 \bibitem[\citeproctext]{ref-ouwens2002maximin}
 \CSLLeftMargin{4. }%
-\CSLRightInline{Ouwens MJNM, Tan FES, Berger MPF. Maximin {D}-optimal
-designs for longitudinal mixed effects models. \emph{Biometrics}.
-2002;58(4):735-741.
-doi:\href{https://doi.org/10.1111/j.0006-341x.2002.00735.x}{10.1111/j.0006-341x.2002.00735.x}}
+\CSLRightInline{Ouwens MJNM, Tan FES, Berger MPF. Maximin {D}-optimal designs for longitudinal mixed effects models. \emph{Biometrics}. 2002;58(4):735-741. doi:\href{https://doi.org/10.1111/j.0006-341x.2002.00735.x}{10.1111/j.0006-341x.2002.00735.x}}
 
 \bibitem[\citeproctext]{ref-tekle2008doptimal}
 \CSLLeftMargin{5. }%
-\CSLRightInline{Tekle FB, Tan FES, Berger MPF. {D}-optimal cohort
-designs for linear mixed-effects models. \emph{Statistics in Medicine}.
-2008;27(14):2586-2600.
-doi:\href{https://doi.org/10.1002/sim.3045}{10.1002/sim.3045}}
+\CSLRightInline{Tekle FB, Tan FES, Berger MPF. {D}-optimal cohort designs for linear mixed-effects models. \emph{Statistics in Medicine}. 2008;27(14):2586-2600. doi:\href{https://doi.org/10.1002/sim.3045}{10.1002/sim.3045}}
 
 \bibitem[\citeproctext]{ref-tekle2011cohorts}
 \CSLLeftMargin{6. }%
-\CSLRightInline{Tekle FB, Tan FES, Berger MPF. Too many cohorts and
-repeated measurements are a waste of resources. \emph{Journal of
-Clinical Epidemiology}. 2011;64(12):1383-1390.
-doi:\href{https://doi.org/10.1016/j.jclinepi.2010.11.023}{10.1016/j.jclinepi.2010.11.023}}
+\CSLRightInline{Tekle FB, Tan FES, Berger MPF. Too many cohorts and repeated measurements are a waste of resources. \emph{Journal of Clinical Epidemiology}. 2011;64(12):1383-1390. doi:\href{https://doi.org/10.1016/j.jclinepi.2010.11.023}{10.1016/j.jclinepi.2010.11.023}}
 
 \bibitem[\citeproctext]{ref-vickers2003howmany}
 \CSLLeftMargin{7. }%
-\CSLRightInline{Vickers AJ. How many repeated measures in repeated
-measures designs? {Statistical} issues for comparative trials. \emph{BMC
-Medical Research Methodology}. 2003;3:22.
-doi:\href{https://doi.org/10.1186/1471-2288-3-22}{10.1186/1471-2288-3-22}}
+\CSLRightInline{Vickers AJ. How many repeated measures in repeated measures designs? {Statistical} issues for comparative trials. \emph{BMC Medical Research Methodology}. 2003;3:22. doi:\href{https://doi.org/10.1186/1471-2288-3-22}{10.1186/1471-2288-3-22}}
 
 \bibitem[\citeproctext]{ref-winkens2007polynomial}
 \CSLLeftMargin{8. }%
-\CSLRightInline{{Winkens B, Schouten HJA, van Breukelen GJP, Berger
-MPF}. Optimal designs for clinical trials with second-order polynomial
-treatment effects. \emph{Statistical Methods in Medical Research}.
-2007;16(6):523-537.
-doi:\href{https://doi.org/10.1177/0962280206071847}{10.1177/0962280206071847}}
+\CSLRightInline{{Winkens B, Schouten HJA, van Breukelen GJP, Berger MPF}. Optimal designs for clinical trials with second-order polynomial treatment effects. \emph{Statistical Methods in Medical Research}. 2007;16(6):523-537. doi:\href{https://doi.org/10.1177/0962280206071847}{10.1177/0962280206071847}}
 
 \bibitem[\citeproctext]{ref-candel2008empirical}
 \CSLLeftMargin{9. }%
-\CSLRightInline{Candel MJJM. Optimal designs for empirical {Bayes}
-estimators of individual linear and quadratic growth curves in linear
-mixed models. \emph{Statistical Methods in Medical Research}.
-2008;18(4):397-419.
-doi:\href{https://doi.org/10.1177/0962280207088026}{10.1177/0962280207088026}}
+\CSLRightInline{Candel MJJM. Optimal designs for empirical {Bayes} estimators of individual linear and quadratic growth curves in linear mixed models. \emph{Statistical Methods in Medical Research}. 2008;18(4):397-419. doi:\href{https://doi.org/10.1177/0962280207088026}{10.1177/0962280207088026}}
 
 \bibitem[\citeproctext]{ref-abebe2014bayesian}
 \CSLLeftMargin{10. }%
-\CSLRightInline{{Abebe HT, Tan FES, van Breukelen GJP, Berger MPF}.
-Bayesian design for dichotomous repeated measurements with
-autocorrelation. \emph{Statistical Methods in Medical Research}.
-2014;24(5):594-611.
-doi:\href{https://doi.org/10.1177/0962280213508850}{10.1177/0962280213508850}}
+\CSLRightInline{{Abebe HT, Tan FES, van Breukelen GJP, Berger MPF}. Bayesian design for dichotomous repeated measurements with autocorrelation. \emph{Statistical Methods in Medical Research}. 2014;24(5):594-611. doi:\href{https://doi.org/10.1177/0962280213508850}{10.1177/0962280213508850}}
 
 \bibitem[\citeproctext]{ref-jones1991unequally}
 \CSLLeftMargin{11. }%
-\CSLRightInline{Jones RH, Boadi-Boateng F. Unequally spaced longitudinal
-data with {AR(1)} serial correlation. \emph{Biometrics}.
-1991;47(1):161-175.}
+\CSLRightInline{Jones RH, Boadi-Boateng F. Unequally spaced longitudinal data with {AR(1)} serial correlation. \emph{Biometrics}. 1991;47(1):161-175.}
 
 \bibitem[\citeproctext]{ref-iddi2022longpower}
 \CSLLeftMargin{12. }%
-\CSLRightInline{Iddi S, Donohue MC. Power and sample size for
-longitudinal models in {R}---the \texttt{longpower} package and {Shiny}
-app. \emph{The R Journal}. Published online 2022.
-doi:\href{https://doi.org/10.32614/RJ-2022-022}{10.32614/RJ-2022-022}}
+\CSLRightInline{Iddi S, Donohue MC. Power and sample size for longitudinal models in {R}---the \texttt{longpower} package and {Shiny} app. \emph{The R Journal}. Published online 2022. doi:\href{https://doi.org/10.32614/RJ-2022-022}{10.32614/RJ-2022-022}}
 
 \bibitem[\citeproctext]{ref-donohue2010power}
 \CSLLeftMargin{13. }%
-\CSLRightInline{Donohue MC, Gamst AC, Thomas RG, Aisen PS. Power for
-linear models of longitudinal data with applications to {Alzheimer's
-Disease} phase {II} study design. Published online 2010.}
+\CSLRightInline{Donohue MC, Gamst AC, Thomas RG, Aisen PS. Power for linear models of longitudinal data with applications to {Alzheimer's Disease} phase {II} study design. Published online 2010.}
 
 \end{CSLReferences}
-
-\vfill
-
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
-
-\emph{Rendered on 2026-05-11 at 18:42 PDT.}\\
-\emph{Source:
-\texttt{\textasciitilde{}/prj/res/05-optimal-visit-placement/visitplacement/analysis/report/report.Rmd}}
 
 \end{document}
