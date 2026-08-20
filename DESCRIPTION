@@ -7,15 +7,17 @@ Description: Methodology for optimal visit timing and placement in longitudinal 
 License: GPL-3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.0
+Imports:
+    nlme
 Suggests:
     dplyr,
     ggplot2,
     here,
     kableExtra,
     knitr,
-    nlme,
+    pkgload,
     rmarkdown,
     rprojroot,
     tidyr,
     tinytest
+Config/roxygen2/version: 8.0.0

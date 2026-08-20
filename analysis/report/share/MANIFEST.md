@@ -5,3 +5,4 @@
 | Staged PDF | Source | Version | Rendered |
 |---|---|---|---|
 | `report-2026-08-15-1633-ea19a49.pdf` | `~/prj/res/05-optimal-visit-placement/visitplacement/analysis/report/report.Rmd` | `ea19a49` | 2026-08-15 16:33 PDT |
+| `report-2026-08-20-1358-7f3a5e9-wip.pdf` | `~/prj/res/05-optimal-visit-placement/visitplacement/analysis/report/report.Rmd` | `7f3a5e9-wip` | 2026-08-20 13:58 PDT |

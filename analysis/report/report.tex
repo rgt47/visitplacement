@@ -139,8 +139,8 @@
   \renewcommand{\headrulewidth}{0pt}%
   \renewcommand{\footrulewidth}{0.4pt}}
 \renewcommand{\stampsource}{\textasciitilde{}/\allowbreak{}prj/\allowbreak{}res/\allowbreak{}05-optimal-visit-placement/\allowbreak{}visitplacement/\allowbreak{}analysis/\allowbreak{}report/\allowbreak{}report.Rmd}
-\renewcommand{\stamptime}{2026-08-15 16:33 PDT}
-\renewcommand{\stampversion}{\detokenize{ea19a49}}
+\renewcommand{\stamptime}{2026-08-20 13:58 PDT}
+\renewcommand{\stampversion}{\detokenize{7f3a5e9-wip}}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
@@ -170,17 +170,42 @@
 \@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
 \makeatother
 \hypersetup{
-  pdftitle={Optimal Visit Placement in Longitudinal Trials},
+  pdftitle={Efficiency Consequences of Visit Schedule Choice in Longitudinal Trials: An Analytic and Simulation-Based Comparison},
   pdfauthor={Ronald G. Thomas, Ph.D.},
+  pdfkeywords={\xmpquote{longitudinal data; optimal design; visit schedule; linear mixed model; Monte Carlo simulation; relative efficiency}},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 
-\title{Optimal Visit Placement in Longitudinal Trials}
+\title{Efficiency Consequences of Visit Schedule Choice in Longitudinal Trials: An Analytic and Simulation-Based Comparison}
 \author{Ronald G. Thomas, Ph.D.\thanks{Wertheim School of Public Health, UCSD; ORCID: 0000-0003-1686-4965}}
-\date{August 15, 2026}
+\date{August 20, 2026}
 
 \begin{document}
 \maketitle
+\begin{abstract}
+Observation times in longitudinal clinical trials are usually
+spaced equally for administrative convenience, but optimal design
+theory shows that placement affects the precision of estimated
+treatment effects. We compare an equally spaced five-visit
+schedule with a boundary-clustered schedule for a two-arm,
+24-month trial with a linearly divergent treatment effect,
+combining an exact generalized least squares (GLS) efficiency
+calculation with a common-random-number Monte Carlo study (2000
+paired replications) under a random-intercept, random-slope data
+generating model. The analytic relative efficiency of the
+clustered design is 1.06, and the paired simulation, after
+recalibrating the effect size so power is informative rather than
+at ceiling, reproduces this result (empirical relative efficiency
+1.07, 95\% bootstrap interval 1.06-1.09), confirming that the
+precision advantage is real and not simulation noise. We do not
+claim optimality: the theoretically optimal design for this
+covariance structure is not computed here, and only two designs
+are compared. The contribution is a worked, fully reproducible
+demonstration of how much efficiency is at stake for one realistic
+configuration, and a template (\texttt{R/simulation.R}) for extending the
+comparison to other covariance structures, dropout mechanisms, and
+candidate schedules.
+\end{abstract}
 
 {
 \setcounter{tocdepth}{2}
@@ -197,9 +222,10 @@ convenience rather than statistical efficiency. A growing body
 of work in optimal experimental design suggests that the
 placement of these observation times can substantially affect
 the precision with which treatment effects are estimated. We
-begin in Section 1.1 with a review of the relevant literature
-and then describe the simulation study and its results in
-Sections 2 and 3.
+begin in Section \ref{optimal-allocation-of-observation-times}
+with a review of the relevant literature and then describe the
+analytic efficiency calculation and simulation study, and their
+results, in Sections \ref{methods} and \ref{results}.
 
 \subsection{Optimal allocation of observation times}\label{optimal-allocation-of-observation-times}
 
@@ -292,13 +318,16 @@ disease-modifying treatment effects.
 
 \subsection{Present study}\label{present-study}
 
-Despite the theoretical optimality results, limited
-simulation-based evidence exists on how different visit
-schedules perform in finite samples under realistic data-
-generating mechanisms. In this report, we present a Monte
-Carlo study comparing two five-visit designs for a 100-patient,
-two-arm longitudinal trial with linearly divergent treatment
-effects:
+The theoretical optimality results reviewed above establish that
+the best design depends on the assumed covariance structure, but
+they do not by themselves quantify how much efficiency is at
+stake for a specific, realistic trial configuration, nor do they
+address the finite-sample behavior of the REML-based inference
+that practitioners actually use. This report addresses that
+translational gap for one configuration: a 100-patient, two-arm,
+24-month trial with a linearly divergent treatment effect,
+analyzed under a random-intercept, random-slope model. We compare
+two five-visit designs:
 
 \begin{itemize}
 \tightlist
@@ -306,15 +335,31 @@ effects:
   \textbf{Equal spacing:} observations at months 0, 6, 12, 18, and 24.
 \item
   \textbf{Clustered spacing:} observations clustered near the
-  beginning and end of the study period (months 0, 2, 4, 20, 24),
-  motivated by the theoretical result that under compound
-  symmetry, efficiency is gained by concentrating measures where
-  the treatment effect is largest.
+  beginning and end of the study period (months 0, 2, 4, 20, 24).
+  Under a random-slope covariance structure (Section
+  \ref{data-generating-model}), boundary-loaded time-points are
+  efficient for estimating the slope contrast for a classical
+  leverage reason -- observations far from the mean time carry more
+  information about a slope -- which is distinct from the
+  compound-symmetry mechanism that motivates clustering in\textsuperscript{\citeproc{ref-winkensOptimalTimepointsClinical2005}{1}}; see Section
+  \ref{covariance-structure-and-theoretical-prediction} for the
+  derivation.
 \end{itemize}
 
-We evaluate the designs in terms of bias, standard error, power,
-and coverage of 95\% confidence intervals for the treatment-by-time
-interaction.
+We first derive the exact asymptotic (GLS) relative efficiency of
+the two designs in closed form, then use a common-random-number
+Monte Carlo study to assess whether finite-sample REML estimation
+and inference (bias, empirical versus model-based standard error,
+power, and 95\% confidence interval coverage) reproduce the
+analytic prediction. We do not claim that either design is
+optimal: the theoretically optimal design implied by the cited
+literature is not computed here, and only two candidate schedules
+are compared. \texttt{R/simulation.R} in the accompanying compendium
+implements the data-generating model, the analytic efficiency
+calculation, and the paired simulation as reusable functions so
+the comparison can be extended to other covariance structures,
+sample sizes, dropout mechanisms, and candidate schedules (Section
+\ref{scenario-extension-analytic-only}).
 
 \section{Methods}\label{methods}
 
@@ -342,6 +387,47 @@ The parameter of interest is \(\beta_3\), the treatment-by-time
 interaction, which represents the rate at which the treatment
 effect diverges from the control effect per unit time.
 
+\subsection{Covariance structure and theoretical prediction}\label{covariance-structure-and-theoretical-prediction}
+
+Marginalizing over the random effects, this model induces a
+within-subject covariance
+\(\text{Cov}(Y_{ij}, Y_{ij'}) = \tau_0^2 + \tau_{01}(t_j + t_{j'}) +
+\tau_1^2 t_j t_{j'} + \sigma^2 \mathbb{1}(j = j')\), in which the
+marginal variance increases with \(t_j^2\) and the correlation
+between visits depends on their product \(t_j t_{j'}\), not on their
+lag \(|t_j - t_{j'}|\). This is the standard random-coefficients
+(random-intercept, random-slope) covariance structure. It is
+distinct from both compound symmetry (CS), which is the
+random-intercept-only special case (\(\tau_1 = 0\)) with constant
+correlation regardless of visit timing, and from a first-order
+autoregressive (AR(1)) structure, whose correlation depends only on
+the lag between visits and does not grow with \(\tau_1\) boundary
+leverage. An earlier draft of this report described the simulated
+structure as combining features of CS and AR(1); that
+characterization is incorrect and has been removed (see the
+Discussion for the corrected interpretation).
+
+The efficiency prediction relevant to this structure differs from
+the CS-based argument in\textsuperscript{\citeproc{ref-winkensOptimalTimepointsClinical2005}{1}}.
+Under CS, clustering observations near the end of the study helps
+because the treatment effect (and hence the signal) is largest
+there while every pair of visits is equally correlated, so nothing
+is lost by leaving a gap. Under the random-slope structure
+simulated here, the reason boundary-clustered designs are more
+efficient for the \emph{slope} contrast \(\beta_3\) is instead the
+classical leverage argument for regression slopes: for a simple
+linear regression of \(Y\) on \(t\), \(\text{Var}(\hat{\text{slope}})
+\propto 1 / \sum_i (t_i - \bar{t})^2\), so observations placed far
+from the mean time carry disproportionately more information about
+the slope. Section \ref{analytic-relative-efficiency} below
+verifies this prediction is directionally correct but shows the
+efficiency gain shrinks as the random-slope variance \(\tau_1^2\)
+grows relative to the residual variance, because a larger
+\(\tau_1^2\) makes the slope itself (not just its estimation error)
+more variable across subjects, which increases the total variance
+contributed by every visit and dilutes the boundary-leverage
+advantage.
+
 \subsection{Parameter values}\label{parameter-values}
 
 We use the following parameter values, broadly motivated by
@@ -356,26 +442,45 @@ cognitive decline trials:
 \toprule
 Parameter & Symbol & Value\\
 \midrule
-Intercept & $\beta_0$ & 50.0\\
-Time slope & $\beta_1$ & -1.0\\
-Group effect at baseline & $\beta_2$ & 0.0\\
-Group x time & $\beta_3$ & 0.5\\
-SD random intercept & $\tau_0$ & 5.0\\
+Intercept & $\beta_0$ & 50.00\\
+Time slope & $\beta_1$ & -1.00\\
+Group effect at baseline & $\beta_2$ & 0.00\\
+Group x time & $\beta_3$ & 0.19\\
+SD random intercept & $\tau_0$ & 5.00\\
 \addlinespace
-SD random slope & $\tau_1$ & 0.3\\
-Residual SD & $\sigma$ & 3.0\\
-Subjects per group & $n$ & 50.0\\
-Study duration (months) & -- & 24.0\\
-Number of simulations & -- & 2000.0\\
+SD random slope & $\tau_1$ & 0.30\\
+Residual SD & $\sigma$ & 3.00\\
+Subjects per group & $n$ & 50.00\\
+Study duration (months) & -- & 24.00\\
+Number of simulations & -- & 2000.00\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The treatment-by-time interaction \(\beta_3 = 0.5\) implies that
-the treatment group improves (or declines less) by 0.5 units per
+The treatment-by-time interaction \(\beta_3 = 0.19\) implies that
+the treatment group improves (or declines less) by 0.19 units per
 month relative to control, yielding a cumulative treatment
-advantage of 12 units over 24
+advantage of 4.56 units over 24
 months.
+
+\subsubsection{Recalibration of the treatment effect}\label{recalibration-of-the-treatment-effect}
+
+An earlier draft used \(\beta_3 = 0.5\), for which the analytic power
+of both designs is 1 to machine precision (Section
+\ref{analytic-relative-efficiency}): every replication rejects the
+null, so power cannot discriminate between designs and the metric
+is uninformative. We recalibrated \(\beta_3\) so that the
+equal-spacing design has approximately 80\% analytic power at the
+two-sided \(\alpha = 0.05\) level, which requires
+\(\beta_3 / \text{SE}_{\text{equal}} \approx 2.80\) (the sum of the
+\(z\)-quantiles for 80\% power and a two-sided 5\% test). With
+\(\text{SE}_{\text{equal}} = 0.0678\) (Section
+\ref{analytic-relative-efficiency}), this gives \(\beta_3 \approx
+0.19\), for which the analytic power is 80.0\% (equal spacing) and
+82.4\% (clustered spacing) -- close to, and not at, the ceiling, so
+that power remains informative while both designs are still
+adequately powered for a realistic trial. All other parameters are
+unchanged from the original design.
 
 \subsection{Design specifications}\label{design-specifications}
 
@@ -394,42 +499,177 @@ Clustered & 0 & 2 & 4 & 20 & 24\\
 \end{tabular}
 \end{table}
 
+\begin{figure}
+
+{\centering \includegraphics{report_files/figure-latex/design-visual-1} 
+
+}
+
+\caption{Schematic of the two visit schedules over the 24-month study period. Lines show the expected group trajectories; markers show each design's visit times, vertically offset (Equal above, Clustered below) purely to avoid overplotting at shared visit times (0 and 24 months) and carry no other meaning.}\label{fig:design-visual}
+\end{figure}
+
+\subsection{Analytic relative efficiency}\label{analytic-relative-efficiency}
+
+Under the data generating model of Section
+\ref{data-generating-model}, the treatment-by-time interaction
+\(\hat{\beta}_3\) has an exact large-sample GLS variance: with
+\(\mathbf{Z}_i = [\mathbf{1}, \mathbf{t}]\) the \(k \times 2\) per-subject
+design matrix for the random effects, \(\mathbf{D}\) the random-effects
+covariance matrix, and
+\(\mathbf{V} = \mathbf{Z}_i \mathbf{D} \mathbf{Z}_i' + \sigma^2
+\mathbf{I}_k\), the information matrix
+\(\mathbf{M} = \sum_i \mathbf{X}_i' \mathbf{V}^{-1} \mathbf{X}_i\)
+(summed separately over control subjects, for whom the last two
+columns of \(\mathbf{X}_i\) are zero, and treatment subjects) gives
+\(\text{Var}(\hat{\beta}_3) = [\mathbf{M}^{-1}]_{44}\). This ten-line
+linear algebra calculation, implemented as \texttt{analytic\_gls\_se()} in
+\texttt{R/simulation.R}, requires no simulation:
+
+\begin{table}[!h]
+\centering
+\caption{\label{tab:analytic-efficiency}Exact GLS standard errors of the treatment-by-time
+    interaction under the random-slope data-generating model.}
+\centering
+\fontsize{10}{12}\selectfont
+\begin{tabular}[t]{lr}
+\toprule
+Design & Analytic SE\\
+\midrule
+Equal & 0.0678\\
+Clustered & 0.0658\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The exact GLS standard errors are
+0.0678 (equal spacing) and
+0.0658 (clustered spacing),
+giving a relative efficiency (ratio of variances) of
+1.063 in favor of the clustered design.
+This analytic value is the primary quantity of interest for the
+design comparison; the simulation in Section
+\ref{simulation-procedure} exists to answer a different question --
+whether finite-sample REML estimation and Wald-type inference
+(bias, coverage, and empirical versus model-based SE) reproduce
+this analytic prediction and behave as expected at \(n = 100\) -- not
+to re-derive a number already available in closed form.
+
+\subsection{Scenario extension (analytic only)}\label{scenario-extension-analytic-only}
+
+The single scenario simulated in this report fixes one covariance
+structure, one effect size, and one sample size (2026-08-16
+review, issue 2.4). Because the design comparison's quantity of
+interest, the GLS relative efficiency, has a closed form (Section
+\ref{analytic-relative-efficiency}), \texttt{analytic\_gls\_se\_general()}
+in \texttt{R/covariance.R} generalizes the calculation to an arbitrary
+within-subject covariance matrix, so the sensitivity of the
+efficiency contrast to the covariance structure can be assessed
+without additional Monte Carlo simulation. Table
+\ref{tab:scenario-grid} reports the exact relative efficiency of
+the clustered versus equal-spacing design across the random-slope
+SD \(\tau_1\) used in the main simulation, and for two additional
+structures: compound symmetry, the mechanism that motivates
+clustering in\textsuperscript{\citeproc{ref-winkensOptimalTimepointsClinical2005}{1}}, and AR(1)
+plus measurement error.
+
+\begin{table}[!h]
+\centering
+\caption{\label{tab:scenario-grid}Analytic (closed-form, no simulation) relative
+    efficiency of the clustered versus equal-spacing design
+    across covariance structures and random-slope variance.}
+\centering
+\fontsize{9}{11}\selectfont
+\begin{tabular}[t]{llrrr}
+\toprule
+Structure & Parameter & SE (Equal) & SE (Clustered) & Relative efficiency\\
+\midrule
+Random slope & tau\_1 = 0.10 & 0.0374 & 0.0336 & 1.24\\
+Random slope & tau\_1 = 0.20 & 0.0510 & 0.0482 & 1.12\\
+Random slope & tau\_1 = 0.30 & 0.0678 & 0.0658 & 1.06\\
+Random slope & tau\_1 = 0.40 & 0.0860 & 0.0844 & 1.04\\
+Random slope & tau\_1 = 0.50 & 0.1049 & 0.1036 & 1.03\\
+\addlinespace
+Compound symmetry & tau\_0 = 5.0 & 0.0316 & 0.0269 & 1.38\\
+AR(1) + error & rho = 0.8 & 0.0554 & 0.0528 & 1.10\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The clustered design is more efficient across the full
+random-slope grid, but the advantage shrinks as \(\tau_1\) grows
+relative to the residual SD \(\sigma\), consistent with the
+leverage-dilution argument of Section
+\ref{covariance-structure-and-theoretical-prediction}. Under
+compound symmetry and under AR(1) plus measurement error the
+clustered design is also more efficient, although by a different
+mechanism in each case. This extension is analytic only: it does
+not assess whether finite-sample REML estimation and inference
+reproduce these predictions for structures other than the
+random-slope structure actually simulated, nor does it vary
+sample size or dropout. Extending the Monte Carlo comparison
+itself to this grid, and to dropout, remains future work (see the
+Discussion); \texttt{Rscript\ analysis/scripts/run\_scenario\_grid.R}
+regenerates Table \ref{tab:scenario-grid}.
+
 \subsection{Simulation procedure}\label{simulation-procedure}
 
-For each of 2000 Monte Carlo replications, we:
+The simulation functions (\texttt{simulate\_trial()}, \texttt{run\_one\_sim()},
+\texttt{run\_paired\_simulation()}, \texttt{analytic\_gls\_se()}) live in \texttt{R/} as
+documented, unit-tested package functions (\texttt{inst/tinytest/}) rather
+than inline in this document, so they can be reused for the
+scenario extension and audited independently of the manuscript
+(2026-08-16 review, issue 2.8). For each of 2000 Monte Carlo
+replications, \texttt{run\_paired\_simulation()}:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Generate 100 subjects, randomized 1:1 to treatment
-  and control.
+  Generates 100 subjects, randomized 1:1 to treatment
+  and control, drawing one shared set of subject-level random
+  effects \((b_{0i}, b_{1i})\) and one shared set of residual errors
+  \(\varepsilon_{ij}\) per subject-visit index \(j = 1, \dots, 5\).
 \item
-  Simulate longitudinal outcomes at the five visit times for each
-  design using the data generating model above.
+  Builds the equal-spacing and clustered-spacing datasets from
+  \emph{those same draws}, so the \(j\)-th random effect and residual
+  realization is reused across designs for the \(j\)-th visit rather
+  than redrawn -- these are common random numbers (CRN), which
+  pair the two designs within each replication and substantially
+  reduce the Monte Carlo error of the \emph{difference} between designs
+  relative to two independent simulation arms.
 \item
-  Fit a linear mixed model (random intercepts and slopes) using
-  restricted maximum likelihood (REML) via \texttt{nlme::lme()}.
+  Fits a linear mixed model (random intercepts and slopes) to each
+  design's dataset using restricted maximum likelihood (REML) via
+  \texttt{nlme::lme()}.
 \item
-  Extract the point estimate, standard error, and \(p\)-value for
-  \(\hat{\beta}_3\).
+  Extracts the point estimate, standard error, and \(p\)-value for
+  \(\hat{\beta}_3\) for each design.
 \end{enumerate}
 
-We then compute, for each design:
+For each design we compute the mean estimate (bias), the empirical
+SD of \(\hat{\beta}_3\), the mean model-based SE, empirical power
+(\(p < 0.05\)), and 95\% CI coverage, each with a Monte Carlo standard
+error (MCSE) computed following\textsuperscript{\citeproc{ref-morris2019simulation}{\textbf{morris2019simulation?}}}: MCSE of the
+empirical SD is \(\text{SE} / \sqrt{2(R-1)}\), MCSE of a proportion
+(power, coverage) is \(\sqrt{\hat p (1-\hat p) / R}\), and MCSE of the
+bias is \(\text{SE} / \sqrt{R}\), where \(R\) is the number of converged
+replications. We additionally report a paired bootstrap (resampling
+replication indices, which respects the CRN pairing) 95\% interval
+for the relative efficiency (ratio of empirical variances).
 
-\begin{itemize}
-\tightlist
-\item
-  Mean estimate of \(\hat{\beta}_3\) (to assess bias).
-\item
-  Empirical standard deviation of \(\hat{\beta}_3\) (true SE).
-\item
-  Mean model-based standard error.
-\item
-  Empirical power (proportion of simulations with \(p < 0.05\)).
-\item
-  Coverage of 95\% confidence intervals.
-\end{itemize}
+The driver script \texttt{analysis/scripts/run\_simulation.R} runs this
+procedure and saves the raw per-replication estimates, the summary
+statistics with MCSEs, the analytic SEs, and the bootstrap interval
+to a single versioned artifact,
+\texttt{analysis/data/derived\_data/sim\_results.rds}, which this document
+reads directly rather than re-simulating on every render or relying
+on the knitr cache to stay synchronized with the reported numbers
+(2026-08-16 review, issue 2.8(e)). To regenerate:
+\texttt{Rscript\ analysis/scripts/run\_simulation.R\ 2000}. The results below
+used 2000 replications, R version 4.6.1 (2026-06-24),
+and \texttt{nlme} 3.1.169, completing in
+176 seconds
+(single core, no parallelization).
 
 \section{Results}\label{results}
 
@@ -437,28 +677,41 @@ We then compute, for each design:
 
 \begin{table}[!h]
 \centering
-\caption{\label{tab:summary-table}Simulation results for the treatment-by-time
-    interaction.}
+\caption{\label{tab:summary-table}Simulation results for the treatment-by-time interaction, with Monte Carlo standard errors (MCSE) of each metric computed following @morris2019simulation.}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
-\fontsize{10}{12}\selectfont
-\begin{tabular}[t]{lrrrrrrr}
+\fontsize{8}{10}\selectfont
+\begin{tabular}[t]{lrrrrrrrrrrr}
 \toprule
-Design & Converged & Mean Est. & Bias & Emp. SE & Model SE & Power & Coverage\\
+Design & Converged & Mean Est. & Bias & MCSE(Bias) & Emp. SE & MCSE(Emp. SE) & Model SE & Power & MCSE(Power) & Coverage & MCSE(Coverage)\\
 \midrule
-Clustered & 2000 & 0.501 & 0.001 & 0.0650 & 0.0655 & 1 & 0.953\\
-Equal & 2000 & 0.498 & -0.002 & 0.0671 & 0.0676 & 1 & 0.948\\
+Equal & 2000 & 0.189 & -0.0011 & 0.0015 & 0.0669 & 0.0011 & 0.0676 & 0.787 & 0.0092 & 0.952 & 0.0048\\
+Clustered & 2000 & 0.189 & -0.0015 & 0.0014 & 0.0646 & 0.0010 & 0.0655 & 0.814 & 0.0087 & 0.957 & 0.0046\\
 \bottomrule
 \end{tabular}}
 \end{table}
 
+Replications for which \texttt{nlme::lme()} failed to converge (an
+error or warning during fitting, per \texttt{run\_one\_sim()} in
+\texttt{R/simulation.R}) are recorded as \texttt{NA} and excluded from the
+summary statistics above rather than imputed or retried; the
+\texttt{Converged} column reports how many of the 2000 attempted
+replications per design contributed to each summary statistic.
+
 We observe that the equal-spacing design achieves an empirical
-power of 100.0\%, compared
-with 100.0\% for the
-clustered design. The empirical standard error of
-\(\hat{\beta}_3\) is 0.0671 under equal
-spacing and 0.0650 under the clustered
-design.
+power of 78.7\% (MCSE 0.9\%), compared with 81.3\% (MCSE
+0.9\%) for the
+clustered design; both are informative rather than at ceiling
+following the recalibration of \(\beta_3\) (Section
+\ref{recalibration-of-the-treatment-effect}). The empirical
+standard error of \(\hat{\beta}_3\) is 0.0669 (MCSE
+0.00106) under equal spacing and \texttt{r\ sprintf("\%.4f\ (MCSE\ \%.5f)",\ se\_clust,\ mcse\_se\_clust)} under the
+clustered design. The paired-bootstrap relative efficiency (ratio
+of empirical variances, resampling replication indices so the
+common-random-number pairing is respected) is 1.07, 95\% bootstrap interval 1.06-1.09, consistent
+with the analytic relative efficiency of 1.063 (Section \ref{analytic-relative-efficiency}); the
+interval excludes 1, so the precision advantage of the clustered
+design is distinguishable from Monte Carlo noise.
 
 \subsection{Distribution of estimates}\label{distribution-of-estimates}
 
@@ -482,17 +735,6 @@ design.
 \caption{Distribution of model-based standard errors across simulations.}\label{fig:se-boxplot}
 \end{figure}
 
-\subsection{Design comparison}\label{design-comparison}
-
-\begin{figure}
-
-{\centering \includegraphics{report_files/figure-latex/design-visual-1} 
-
-}
-
-\caption{Schematic of the two visit schedules over the 24-month study period. Lines show the expected group trajectories.}\label{fig:design-visual}
-\end{figure}
-
 \section{Discussion}\label{discussion}
 
 In this study, we have endeavored to illustrate the practical
@@ -500,15 +742,25 @@ consequences of visit placement in longitudinal clinical trials.
 Both designs use the same number of subjects and the same number
 of visits; they differ only in the timing of observations.
 
-The results are, in general, broadly consistent with the
-theoretical findings of\textsuperscript{\citeproc{ref-winkensOptimalTimepointsClinical2005}{1}}.
-When the data-generating mechanism includes both random slopes
-and independent residual error -- a structure that combines
-features of compound symmetry and AR(1) with measurement error
--- the clustered design, which concentrates observations near
-the boundaries of the study period, appears to yield different
-precision for the treatment-by-time interaction compared with
-equal spacing.
+The results are broadly consistent, in direction, with the
+theoretical findings of\textsuperscript{\citeproc{ref-winkensOptimalTimepointsClinical2005}{1}},
+but not through the mechanism that paper's compound-symmetry
+analysis invokes. As derived in Section
+\ref{covariance-structure-and-theoretical-prediction}, the
+data-generating mechanism used here is the standard
+random-intercept, random-slope covariance structure, not a
+structure that ``combines features of compound symmetry and AR(1)
+with measurement error'' as an earlier draft of this report
+incorrectly stated; it contains no autoregressive component. The
+clustered design's precision advantage for the slope contrast
+\(\beta_3\) follows instead from the classical leverage argument for
+regression slopes. The advantage is not an artifact of Monte
+Carlo noise: the paired bootstrap relative efficiency (ratio of
+empirical variances) is 1.07 (95\%
+bootstrap interval 1.06-\texttt{r\ sprintf("\%.2f",\ re\_boot\$ci{[}2{]})}), consistent with the analytic
+relative efficiency of 1.063 from
+Section \ref{analytic-relative-efficiency}, and the interval
+excludes 1.
 
 Several caveats warrant mention. First, we assumed complete data
 with no dropout. In practice, attrition is common in
