@@ -139,8 +139,8 @@
   \renewcommand{\headrulewidth}{0pt}%
   \renewcommand{\footrulewidth}{0.4pt}}
 \renewcommand{\stampsource}{\textasciitilde{}/\allowbreak{}prj/\allowbreak{}res/\allowbreak{}05-optimal-visit-placement/\allowbreak{}visitplacement/\allowbreak{}analysis/\allowbreak{}report/\allowbreak{}report.Rmd}
-\renewcommand{\stamptime}{2026-08-20 13:58 PDT}
-\renewcommand{\stampversion}{\detokenize{7f3a5e9-wip}}
+\renewcommand{\stamptime}{2026-08-20 14:03 PDT}
+\renewcommand{\stampversion}{\detokenize{6717595-wip}}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
@@ -527,8 +527,7 @@ linear algebra calculation, implemented as \texttt{analytic\_gls\_se()} in
 
 \begin{table}[!h]
 \centering
-\caption{\label{tab:analytic-efficiency}Exact GLS standard errors of the treatment-by-time
-    interaction under the random-slope data-generating model.}
+\caption{\label{tab:analytic-efficiency}Exact GLS standard errors of the treatment-by-time interaction under the random-slope data-generating model.}
 \centering
 \fontsize{10}{12}\selectfont
 \begin{tabular}[t]{lr}
@@ -574,9 +573,7 @@ plus measurement error.
 
 \begin{table}[!h]
 \centering
-\caption{\label{tab:scenario-grid}Analytic (closed-form, no simulation) relative
-    efficiency of the clustered versus equal-spacing design
-    across covariance structures and random-slope variance.}
+\caption{\label{tab:scenario-grid}Analytic (closed-form, no simulation) relative efficiency of the clustered versus equal-spacing design across covariance structures and random-slope variance.}
 \centering
 \fontsize{9}{11}\selectfont
 \begin{tabular}[t]{llrrr}
@@ -649,7 +646,7 @@ replications, \texttt{run\_paired\_simulation()}:
 For each design we compute the mean estimate (bias), the empirical
 SD of \(\hat{\beta}_3\), the mean model-based SE, empirical power
 (\(p < 0.05\)), and 95\% CI coverage, each with a Monte Carlo standard
-error (MCSE) computed following\textsuperscript{\citeproc{ref-morris2019simulation}{\textbf{morris2019simulation?}}}: MCSE of the
+error (MCSE) computed following\textsuperscript{\citeproc{ref-morris2019simulation}{14}}: MCSE of the
 empirical SD is \(\text{SE} / \sqrt{2(R-1)}\), MCSE of a proportion
 (power, coverage) is \(\sqrt{\hat p (1-\hat p) / R}\), and MCSE of the
 bias is \(\text{SE} / \sqrt{R}\), where \(R\) is the number of converged
@@ -677,7 +674,7 @@ and \texttt{nlme} 3.1.169, completing in
 
 \begin{table}[!h]
 \centering
-\caption{\label{tab:summary-table}Simulation results for the treatment-by-time interaction, with Monte Carlo standard errors (MCSE) of each metric computed following @morris2019simulation.}
+\caption{\label{tab:summary-table}Simulation results for the treatment-by-time interaction, with Monte Carlo standard errors (MCSE) of each metric computed following Morris, White, and Crowther (2019).}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \fontsize{8}{10}\selectfont
@@ -705,8 +702,9 @@ clustered design; both are informative rather than at ceiling
 following the recalibration of \(\beta_3\) (Section
 \ref{recalibration-of-the-treatment-effect}). The empirical
 standard error of \(\hat{\beta}_3\) is 0.0669 (MCSE
-0.00106) under equal spacing and \texttt{r\ sprintf("\%.4f\ (MCSE\ \%.5f)",\ se\_clust,\ mcse\_se\_clust)} under the
-clustered design. The paired-bootstrap relative efficiency (ratio
+0.00106) under equal spacing and
+0.0646 (MCSE 0.00102) under
+the clustered design. The paired-bootstrap relative efficiency (ratio
 of empirical variances, resampling replication indices so the
 common-random-number pairing is respected) is 1.07, 95\% bootstrap interval 1.06-1.09, consistent
 with the analytic relative efficiency of 1.063 (Section \ref{analytic-relative-efficiency}); the
@@ -757,7 +755,8 @@ clustered design's precision advantage for the slope contrast
 regression slopes. The advantage is not an artifact of Monte
 Carlo noise: the paired bootstrap relative efficiency (ratio of
 empirical variances) is 1.07 (95\%
-bootstrap interval 1.06-\texttt{r\ sprintf("\%.2f",\ re\_boot\$ci{[}2{]})}), consistent with the analytic
+bootstrap interval 1.06 to
+1.09), consistent with the analytic
 relative efficiency of 1.063 from
 Section \ref{analytic-relative-efficiency}, and the interval
 excludes 1.
@@ -841,6 +840,10 @@ points for that work.
 \bibitem[\citeproctext]{ref-donohue2010power}
 \CSLLeftMargin{13. }%
 \CSLRightInline{Donohue MC, Gamst AC, Thomas RG, Aisen PS. Power for linear models of longitudinal data with applications to {Alzheimer's Disease} phase {II} study design. Published online 2010.}
+
+\bibitem[\citeproctext]{ref-morris2019simulation}
+\CSLLeftMargin{14. }%
+\CSLRightInline{Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. \emph{Statistics in Medicine}. 2019;38(11):2074-2102. doi:\href{https://doi.org/10.1002/sim.8086}{10.1002/sim.8086}}
 
 \end{CSLReferences}
 

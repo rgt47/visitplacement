@@ -149,11 +149,41 @@
   doi       = {10.32614/RJ-2022-022}
 }
 
-@article{donohue2010power,
-  author    = {Donohue, Michael C. and Gamst, Anthony C. and
-               Thomas, Ronald G. and Aisen, Paul S.},
-  title     = {Power for linear models of longitudinal data with
-               applications to {Alzheimer's Disease} Phase {II}
-               study design},
-  year      = {2010}
+% NOTE (2026-08-20 remediation, whitepaper minor issue 1): this
+% entry was incomplete (no journal/volume/pages) in the version of
+% this file actually used by report.Rmd. A web search found no
+% distinct standalone 2010 journal article or dissertation under
+% this exact title; the CRAN longpower package vignette carries the
+% identical title and Donohue as sole listed author (verified via
+% https://cran.r-project.org/web/packages/longpower/vignettes/longpower.html,
+% checked 2026-08-20), so it is cited here as a misc/vignette entry
+% rather than fabricating a journal, volume, or page range. The
+% four-author list below (Gamst, Thomas, Aisen in addition to
+% Donohue) is preserved from the original entry but is unverified
+% against this source; confirm before submission, or replace with
+% @iddi2022longpower above, which documents the same methodology in
+% a citable, DOI-bearing source.
+@misc{donohue2010power,
+  author = {Donohue, Michael C. and Gamst, Anthony C. and
+            Thomas, Ronald G. and Aisen, Paul S.},
+  title  = {Power for Linear Models of Longitudinal Data with
+            Applications to {Alzheimer's Disease} Phase {II} Study
+            Design},
+  year   = {2010},
+  note   = {longpower R package vignette (author list for the
+            original 2010 version unverified); see
+            \url{https://cran.r-project.org/web/packages/longpower/vignettes/longpower.html}}
+}
+
+@article{morris2019simulation,
+  author    = {Morris, Tim P. and White, Ian R. and Crowther,
+               Michael J.},
+  title     = {Using simulation studies to evaluate statistical
+               methods},
+  journal   = {Statistics in Medicine},
+  year      = {2019},
+  volume    = {38},
+  number    = {11},
+  pages     = {2074--2102},
+  doi       = {10.1002/sim.8086}
 }

@@ -508,8 +508,10 @@ kable(
   format = "latex",
   booktabs = TRUE,
   digits = 4,
-  caption = "Exact GLS standard errors of the treatment-by-time
-    interaction under the random-slope data-generating model."
+  caption = paste(
+    "Exact GLS standard errors of the treatment-by-time",
+    "interaction under the random-slope data-generating model."
+  )
 ) |>
   kable_styling(
     latex_options = "hold_position",
@@ -564,9 +566,11 @@ kable(
     "Structure", "Parameter", "SE (Equal)",
     "SE (Clustered)", "Relative efficiency"
   ),
-  caption = "Analytic (closed-form, no simulation) relative
-    efficiency of the clustered versus equal-spacing design
-    across covariance structures and random-slope variance."
+  caption = paste(
+    "Analytic (closed-form, no simulation) relative efficiency of",
+    "the clustered versus equal-spacing design across covariance",
+    "structures and random-slope variance."
+  )
 ) |>
   kable_styling(
     latex_options = "hold_position",
@@ -681,7 +685,7 @@ kable(
   caption = paste(
     "Simulation results for the treatment-by-time interaction,",
     "with Monte Carlo standard errors (MCSE) of each metric",
-    "computed following @morris2019simulation."
+    "computed following Morris, White, and Crowther (2019)."
   )
 ) |>
   kable_styling(
@@ -727,9 +731,9 @@ clustered design; both are informative rather than at ceiling
 following the recalibration of $\beta_3$ (Section
 \@ref(recalibration-of-the-treatment-effect)). The empirical
 standard error of $\hat{\beta}_3$ is `r sprintf("%.4f (MCSE
-%.5f)", se_equal, mcse_se_equal)` under equal spacing and `r
-sprintf("%.4f (MCSE %.5f)", se_clust, mcse_se_clust)` under the
-clustered design. The paired-bootstrap relative efficiency (ratio
+%.5f)", se_equal, mcse_se_equal)` under equal spacing and
+`r sprintf("%.4f (MCSE %.5f)", se_clust, mcse_se_clust)` under
+the clustered design. The paired-bootstrap relative efficiency (ratio
 of empirical variances, resampling replication indices so the
 common-random-number pairing is respected) is `r sprintf("%.2f",
 re_boot$point)`, 95% bootstrap interval `r sprintf("%.2f",
@@ -801,8 +805,8 @@ $\beta_3$ follows instead from the classical leverage argument for
 regression slopes. The advantage is not an artifact of Monte
 Carlo noise: the paired bootstrap relative efficiency (ratio of
 empirical variances) is `r sprintf("%.2f", re_boot$point)` (95%
-bootstrap interval `r sprintf("%.2f", re_boot$ci[1])`-`r
-sprintf("%.2f", re_boot$ci[2])`), consistent with the analytic
+bootstrap interval `r sprintf("%.2f", re_boot$ci[1])` to
+`r sprintf("%.2f", re_boot$ci[2])`), consistent with the analytic
 relative efficiency of `r sprintf("%.3f", analytic_re)` from
 Section \@ref(analytic-relative-efficiency), and the interval
 excludes 1.

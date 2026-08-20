@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.22)  20 AUG 2026 13:58
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.22)  20 AUG 2026 14:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1293,18 +1293,14 @@ File: report_files/figure-latex/design-visual-1.pdf Graphic file (type pdf)
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [6] [7]
-Overfull \hbox (8.9872pt too wide) in paragraph at lines 616--623
+Overfull \hbox (8.9872pt too wide) in paragraph at lines 613--620
 \TU/lmtt/m/n/10.95 analytic_gls_se()\TU/lmr/m/n/10.95 ) live in \TU/lmtt/m/n/10
 .95 R/ \TU/lmr/m/n/10.95 as documented, unit-tested package functions (\TU/lmtt
 /m/n/10.95 inst/tinytest/\TU/lmr/m/n/10.95 )
  []
 
 
-LaTeX Warning: Citation `ref-morris2019simulation' on page 8 undefined on input
- line 652.
-
-
-Overfull \hbox (23.51782pt too wide) in paragraph at lines 660--673
+Overfull \hbox (23.51782pt too wide) in paragraph at lines 657--670
 \TU/lmr/m/n/10.95 bootstrap interval to a single versioned artifact, \TU/lmtt/m
 /n/10.95 analysis/data/derived_data/sim_results.rds\TU/lmr/m/n/10.95 ,
  []
@@ -1322,15 +1318,12 @@ File: report_files/figure-latex/se-boxplot-1.pdf Graphic file (type pdf)
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
-
-LaTeX Warning: There were undefined references.
-
  ) 
 Here is how much of TeX's memory you used:
- 22620 strings out of 468168
- 414861 string characters out of 5432815
- 1013654 words of memory out of 5000000
- 50974 multiletter control sequences out of 15000+600000
+ 22621 strings out of 468168
+ 414887 string characters out of 5432815
+ 1013713 words of memory out of 5000000
+ 50975 multiletter control sequences out of 15000+600000
  638243 words of font info for 131 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  90i,12n,114p,1003b,596s stack positions out of 10000i,1000n,20000p,200000b,200000s
