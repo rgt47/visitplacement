@@ -236,6 +236,123 @@ run_paired_simulation <- function(times_a, times_b, n_per_group,
        paired_diff = paired_diff)
 }
 
+#' Simulate one trial dataset under an arbitrary within-subject
+#' covariance structure
+#'
+#' Generalizes [simulate_trial()] to draw subject-level errors from
+#' any k x k within-subject covariance matrix (e.g. compound
+#' symmetry or AR(1) plus measurement error, from `R/covariance.R`)
+#' rather than assuming the random-intercept, random-slope
+#' decomposition. Added for the full-factorial Monte Carlo grid over
+#' covariance structure and visit schedule (2026-08-16 review, issue
+#' 2.4; see `analysis/scripts/run_full_factorial.R`).
+#'
+#' @param times Numeric vector of visit times (months).
+#' @param n_per_group Integer, number of subjects per arm.
+#' @param beta_0 Numeric, fixed intercept.
+#' @param beta_1 Numeric, fixed time slope (control arm).
+#' @param beta_2 Numeric, baseline group effect.
+#' @param beta_3 Numeric, treatment-by-time interaction.
+#' @param v_mat A k x k within-subject covariance matrix, where
+#'   `k = length(times)`, as produced by [cov_random_slope()],
+#'   [cov_compound_symmetry()], or [cov_ar1_error()].
+#'
+#' @return A data frame with one row per subject-visit, columns
+#'   `id`, `visit`, `time`, `group`, `y`.
+#' @export
+simulate_trial_cov <- function(times, n_per_group, beta_0, beta_1,
+                                beta_2, beta_3, v_mat) {
+  n <- 2 * n_per_group
+  k <- length(times)
+  group <- rep(c(0, 1), each = n_per_group)
+  id <- seq_len(n)
+
+  ch <- chol(v_mat)
+  err <- matrix(stats::rnorm(n * k), n, k) %*% ch
+
+  dat <- expand.grid(visit = seq_len(k), id = id)
+  dat$time <- times[dat$visit]
+  dat$group <- group[dat$id]
+  dat$err <- err[cbind(dat$id, dat$visit)]
+  dat$y <- beta_0 + beta_1 * dat$time +
+    beta_2 * dat$group + beta_3 * dat$group * dat$time + dat$err
+
+  dat$id <- factor(dat$id)
+  dat
+}
+
+#' Fit one simulated trial under an arbitrary within-subject
+#' covariance structure and extract the treatment-by-time estimate
+#'
+#' Generalizes [run_one_sim()] to fit via `nlme::gls()` with a
+#' correlation structure matched to the covariance family used to
+#' generate the data (compound symmetry or AR(1) plus measurement
+#' error), rather than a random-intercept, random-slope `nlme::lme()`
+#' model. Used for the compound-symmetry and AR(1)-plus-error cells
+#' of the full-factorial Monte Carlo grid (2026-08-16 review, issue
+#' 2.4).
+#'
+#' @inheritParams simulate_trial_cov
+#' @param structure Character, one of `"compound_symmetry"` or
+#'   `"ar1_error"`, selecting the fitted correlation structure.
+#' @param dat Optional pre-generated data frame from
+#'   [simulate_trial_cov()]; if `NULL` (the default) a new dataset is
+#'   generated internally from `v_mat`.
+#'
+#' @return A one-row data frame with columns `est`, `se`, `pval`,
+#'   `ci_lo`, `ci_hi`. All are `NA` if the model fit failed to
+#'   converge.
+#' @export
+run_one_sim_cov <- function(times, n_per_group, beta_0, beta_1,
+                             beta_2, beta_3, v_mat, structure,
+                             dat = NULL) {
+  structure <- match.arg(structure,
+                          c("compound_symmetry", "ar1_error"))
+  if (is.null(dat)) {
+    dat <- simulate_trial_cov(
+      times, n_per_group, beta_0, beta_1, beta_2, beta_3, v_mat
+    )
+  }
+
+  correlation <- if (structure == "compound_symmetry") {
+    nlme::corCompSymm(form = ~ 1 | id)
+  } else {
+    nlme::corExp(form = ~ time | id, nugget = TRUE)
+  }
+
+  fit <- tryCatch(
+    nlme::gls(
+      y ~ time * group,
+      data = dat,
+      correlation = correlation,
+      method = "REML"
+    ),
+    error = function(e) NULL,
+    warning = function(w) NULL
+  )
+
+  if (is.null(fit)) {
+    return(
+      data.frame(est = NA_real_, se = NA_real_, pval = NA_real_,
+                 ci_lo = NA_real_, ci_hi = NA_real_)
+    )
+  }
+
+  s <- summary(fit)
+  coefs <- s$tTable
+  row <- which(rownames(coefs) == "time:group")
+
+  est <- coefs[row, "Value"]
+  se <- coefs[row, "Std.Error"]
+  pval <- coefs[row, "p-value"]
+  df_res <- fit$dims$N - fit$dims$p
+  ci_lo <- est - stats::qt(0.975, df_res) * se
+  ci_hi <- est + stats::qt(0.975, df_res) * se
+
+  data.frame(est = est, se = se, pval = pval, ci_lo = ci_lo,
+             ci_hi = ci_hi)
+}
+
 #' Build one simulated replicate for a given design from shared
 #' random draws
 #'

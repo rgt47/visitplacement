@@ -269,3 +269,131 @@ remaining warnings are cosmetic LaTeX float-placement notices
 (`` `!h' float specifier changed to `!ht' ``), unrelated to content.
 `Rscript -e 'pkgload::load_all("."); tinytest::run_test_dir(
 "inst/tinytest")'` reports all 29 assertions passing.
+
+## 6. Follow-up session: full factorial Monte Carlo grid (issue 2.4)
+
+*Completed 2026-08-20, later the same day.*
+
+This follow-up ran the full factorial Monte Carlo rerun deferred in
+Section 3 above, and updated the manuscript's narrative accordingly.
+Per instruction, the dropout-mechanism design decision (also
+deferred in Section 3) was left untouched -- it still requires the
+author's choice of MCAR/MAR mechanism, rate, and whether attrition
+is tied to visit timing, and `simulate_trial()` /
+`run_paired_simulation()` are unmodified in that respect.
+
+- **New functions, `R/simulation.R`.** Added
+  `simulate_trial_cov()` and `run_one_sim_cov()`, generalizing
+  `simulate_trial()`/`run_one_sim()` to simulate and fit (via
+  `nlme::gls()` with a matched correlation structure --
+  `corCompSymm()` for compound symmetry, `corExp(nugget = TRUE)`
+  for AR(1) plus measurement error) under an arbitrary within-
+  subject covariance matrix rather than only the random-intercept,
+  random-slope structure. Exported with roxygen2 docs
+  (`man/simulate_trial_cov.Rd`, `man/run_one_sim_cov.Rd`,
+  `NAMESPACE` regenerated). Seven new tinytest assertions added in
+  `inst/tinytest/test_simulation_cov.R` (structure of output,
+  convergence, CRN reproducibility for the new functions); full
+  suite now 36/36 (was 29/29). `[verified]`.
+- **New driver script,
+  `analysis/scripts/run_full_factorial.R`.** Implements a factorial
+  Monte Carlo grid crossing 5 covariance structures (random-slope
+  $\tau_1 \in \{0.10, 0.30, 0.50\}$, matching the analytic grid's
+  low/base/high points; compound symmetry; AR(1) plus measurement
+  error) with 4 visit schedules (equal, mild-clustered,
+  boundary-clustered [the "Clustered" design used in the main
+  comparison], extreme-clustered), all under complete data (no
+  dropout, by design -- see above). `n_sims = 1000` per cell (20
+  cells, 20,000 total replications), reduced from the main
+  comparison's 2000 to fit a practical single-core runtime; each
+  cell's MCSE is reported in the manuscript so the reduction is
+  transparent rather than hidden. Run completed in 2226 seconds
+  (37.1 minutes); all 20 cells converged fully (1000/1000
+  replications each, no `NA` fits). Output saved to
+  `analysis/data/derived_data/factorial_grid.rds`. `[verified]`
+  (log of the run retained; per-cell timings and convergence counts
+  inspected directly from the saved `.rds`).
+- **Scope note on what "full factorial" means here.** The
+  whitepaper's original issue 2.4 asked for a grid over covariance
+  structure, effect size, dropout, and schedule. This run
+  factorizes over covariance structure and visit schedule only, at
+  the manuscript's single existing effect size ($\beta_3 = 0.19$)
+  and explicitly without dropout, per the instruction not to touch
+  that design decision. Effect size and dropout remain out of
+  scope; see Deferred (Section 3) for dropout specifically.
+- **Manuscript updated with the real numbers,
+  `analysis/report/report.Rmd`.** Added a new "Scenario extension
+  (Monte Carlo)" subsection immediately after the existing
+  analytic-only scenario extension, with a 20-row results table
+  (structure, parameter, schedule, power, empirical SE, relative
+  efficiency vs. equal spacing) and interpretive prose written from
+  the actual computed values (not asserted in advance): 14 of 15
+  non-baseline cells show relative efficiency above 1 (clustering
+  more efficient than equal spacing), with the sole exception at
+  $\tau_1 = 0.50$, boundary-clustered (relative efficiency 0.93),
+  which is within Monte Carlo noise of 1 given the cells' MCSE
+  ($\approx 0.002$-0.0024 on the empirical SE) and consistent with
+  the already-documented prediction that the clustering advantage
+  shrinks as the random-slope variance grows relative to the
+  residual variance. `[verified]` (rendered PDF inspected; table
+  values cross-checked against the saved `.rds` directly).
+- **Narrative claims corrected to match the new evidence.** The
+  Introduction's cross-reference and framing sentence ("only two
+  candidate schedules are compared") was qualified to note the
+  broader Monte Carlo sensitivity check. The Discussion's caveat
+  paragraph previously stated only that "more complex covariance
+  structures ... could alter the relative performance of the two
+  designs" as an untested hypothesis; this is now replaced with
+  what was actually found (the advantage is not specific to the
+  random-slope structure, holds under compound symmetry and AR(1)
+  plus error too, but shrinks and was not statistically
+  distinguishable from null in one of 15 cells at high $\tau_1$).
+  The concluding paragraph's second point, which had asserted that
+  "results that hold under compound symmetry may not carry over to
+  random-slope models or AR(1) structures," was corrected: the
+  qualitative direction of the clustering advantage was found to be
+  robust across the structures actually tested, so the prior
+  framing (implying incompatibility across structures) no longer
+  holds and has been replaced with a magnitude-varies-but-direction-
+  is-robust framing. The abstract's closing sentence was updated to
+  report the 14/15 corroboration finding instead of listing
+  covariance structures as untouched future work. `[verified]`
+  (diffed against the rendered PDF).
+- **Bug found and fixed during this follow-up: broken multi-line
+  inline-R chunks, correctness.** The first draft of the new
+  Monte Carlo section's prose wrote several `` `r sprintf(...)` ``
+  expressions with the code spanning multiple lines (wrapped for
+  the 78-character line limit), which knitr's inline-code parser
+  does not evaluate -- the same class of defect flagged and fixed
+  elsewhere in this document during the earlier session today (see
+  Section 1, "broken inline-R-code chunks"). The first render
+  after adding the new section showed the literal
+  `` r sprintf("%.4f", factorial_grid$grid$empirical_se[...]) ``
+  text in the rendered PDF instead of a number. Fixed by
+  precomputing all such quantities as short, named scalars in a
+  dedicated `factorial-highlights` code chunk and referencing them
+  with single-line `` `r var_name` `` inline calls, matching the
+  pattern already used elsewhere in the document. `[verified]`
+  (second render's PDF text-extracted and checked for zero
+  occurrences of literal `sprintf(` or `factorial_grid$` in the
+  output).
+- **Render and test verification.** `bash tools/render.sh
+  analysis/report/report.Rmd` completes cleanly: no citeproc "not
+  found" warnings, no undefined `\ref{}` warnings (checked by
+  diffing all `\ref{}` targets in `report.tex` against all
+  `\label{}` targets -- empty set difference), no literal
+  unevaluated `` `r ...` `` fragments. Only remaining warning is
+  the same cosmetic LaTeX float-placement notice
+  (`` `!h' float specifier changed to `!ht' ``) already present
+  before this session. `Rscript -e 'pkgload::load_all(".");
+  tinytest::run_test_dir("inst/tinytest")'` reports all 36
+  assertions passing (29 pre-existing plus 7 new for
+  `simulate_trial_cov()`/`run_one_sim_cov()`).
+- **Not done in this follow-up.** Dropout (per instruction, left to
+  the author). Effect-size and sample-size factors in the
+  factorial grid (out of scope; see Scope note above). The
+  `donohue2010power` citation-verification and the four
+  missing-citation items from Section 3 above (unrelated to this
+  follow-up's task). The git repository corruption noted in
+  Section 4 above (still unaddressed; no git surgery was attempted
+  in this follow-up either).

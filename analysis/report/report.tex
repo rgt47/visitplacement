@@ -139,8 +139,8 @@
   \renewcommand{\headrulewidth}{0pt}%
   \renewcommand{\footrulewidth}{0.4pt}}
 \renewcommand{\stampsource}{\textasciitilde{}/\allowbreak{}prj/\allowbreak{}res/\allowbreak{}05-optimal-visit-placement/\allowbreak{}visitplacement/\allowbreak{}analysis/\allowbreak{}report/\allowbreak{}report.Rmd}
-\renewcommand{\stamptime}{2026-08-20 14:03 PDT}
-\renewcommand{\stampversion}{\detokenize{6717595-wip}}
+\renewcommand{\stamptime}{2026-08-20 17:55 PDT}
+\renewcommand{\stampversion}{\detokenize{6f48a5e-wip}}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
@@ -197,14 +197,18 @@ clustered design is 1.06, and the paired simulation, after
 recalibrating the effect size so power is informative rather than
 at ceiling, reproduces this result (empirical relative efficiency
 1.07, 95\% bootstrap interval 1.06-1.09), confirming that the
-precision advantage is real and not simulation noise. We do not
-claim optimality: the theoretically optimal design for this
-covariance structure is not computed here, and only two designs
-are compared. The contribution is a worked, fully reproducible
-demonstration of how much efficiency is at stake for one realistic
-configuration, and a template (\texttt{R/simulation.R}) for extending the
-comparison to other covariance structures, dropout mechanisms, and
-candidate schedules.
+precision advantage is real and not simulation noise. A subsequent
+Monte Carlo grid crossing five covariance structures with four
+visit schedules corroborates the direction of this finding in 14
+of 15 non-baseline cells, with the advantage shrinking as the
+random-slope variance grows large relative to the residual
+variance. We do not claim optimality: the theoretically optimal
+design for this covariance structure is not computed here, and the
+primary paired comparison uses only two designs. The contribution
+is a worked, fully reproducible demonstration of how much
+efficiency is at stake for one realistic configuration, and a
+template (\texttt{R/simulation.R}) for extending the comparison to
+dropout mechanisms and further candidate schedules.
 \end{abstract}
 
 {
@@ -353,13 +357,18 @@ and inference (bias, empirical versus model-based standard error,
 power, and 95\% confidence interval coverage) reproduce the
 analytic prediction. We do not claim that either design is
 optimal: the theoretically optimal design implied by the cited
-literature is not computed here, and only two candidate schedules
-are compared. \texttt{R/simulation.R} in the accompanying compendium
-implements the data-generating model, the analytic efficiency
-calculation, and the paired simulation as reusable functions so
-the comparison can be extended to other covariance structures,
-sample sizes, dropout mechanisms, and candidate schedules (Section
-\ref{scenario-extension-analytic-only}).
+literature is not computed here, and the main paired comparison
+considers only two candidate schedules, although a Monte Carlo
+sensitivity grid over four schedules and five covariance structures
+(Section \ref{scenario-extension-monte-carlo}) corroborates the
+direction of the finding more broadly. \texttt{R/simulation.R} in the
+accompanying compendium implements the data-generating model, the
+analytic efficiency calculation, and the paired simulation as
+reusable functions so the comparison can be extended to other
+covariance structures, sample sizes, dropout mechanisms, and
+candidate schedules (Sections
+\ref{scenario-extension-analytic-only} and
+\ref{scenario-extension-monte-carlo}).
 
 \section{Methods}\label{methods}
 
@@ -601,12 +610,120 @@ compound symmetry and under AR(1) plus measurement error the
 clustered design is also more efficient, although by a different
 mechanism in each case. This extension is analytic only: it does
 not assess whether finite-sample REML estimation and inference
-reproduce these predictions for structures other than the
-random-slope structure actually simulated, nor does it vary
-sample size or dropout. Extending the Monte Carlo comparison
-itself to this grid, and to dropout, remains future work (see the
-Discussion); \texttt{Rscript\ analysis/scripts/run\_scenario\_grid.R}
+reproduce these predictions, nor does it vary sample size or
+dropout. Section \ref{scenario-extension-monte-carlo} extends the
+comparison to a genuine Monte Carlo grid over covariance structure
+and visit schedule; dropout remains future work (see the
+Discussion). \texttt{Rscript\ analysis/scripts/run\_scenario\_grid.R}
 regenerates Table \ref{tab:scenario-grid}.
+
+\subsection{Scenario extension (Monte Carlo)}\label{scenario-extension-monte-carlo}
+
+The preceding section is analytic only: it evaluates the
+closed-form asymptotic GLS efficiency but does not simulate
+finite-sample data or fit REML models away from the single
+random-slope design actually used in Section
+\ref{simulation-procedure}. This section extends the Monte Carlo
+comparison itself to a factorial grid crossing covariance
+structure (the random-slope SD \(\tau_1\) grid, compound symmetry,
+and AR(1) plus measurement error, matching Table
+\ref{tab:scenario-grid}) with four candidate five-visit schedules
+spanning a range of boundary clustering: equal spacing (months 0,
+6, 12, 18, 24, as in the main comparison), mild clustering (0, 4,
+8, 20, 24), boundary clustering (0, 2, 4, 20, 24, the ``Clustered''
+design of the main comparison), and extreme clustering (0, 1, 2,
+23, 24). For each of the resulting 20 cells, \texttt{run\_one\_sim()} (for
+the random-slope structures) or \texttt{run\_one\_sim\_cov()} (for compound
+symmetry and AR(1) plus error, fitting \texttt{nlme::gls()} with a
+matched correlation structure) is used to fit
+1000 simulated replications under REML, exactly as
+in the main comparison. This is a genuine Monte Carlo assessment,
+not a re-derivation of the closed-form values, and it explicitly
+excludes dropout: adding a dropout mechanism requires a design
+decision (MCAR/MAR, rate, whether attrition is tied to visit
+timing) left to the author (see the Discussion). Replication count
+per cell (1000) is reduced from the main
+comparison's 2000 to keep the 20-cell grid within a practical
+single-core runtime; the completed grid took
+37
+minutes. \texttt{Rscript\ analysis/scripts/run\_full\_factorial.R}
+regenerates Table \ref{tab:factorial-grid}.
+
+\begin{table}[!h]
+\centering
+\caption{\label{tab:factorial-grid}Monte Carlo relative efficiency of each visit schedule versus equal spacing, by covariance structure, at 1000 replications per cell.}
+\centering
+\fontsize{8}{10}\selectfont
+\begin{tabular}[t]{lllrrr}
+\toprule
+Structure & Parameter & Schedule & Power & Emp. SE & Rel. eff. vs. Equal\\
+\midrule
+Random slope & tau\_1 = 0.10 & Equal & 0.999 & 0.0382 & 1.00\\
+Random slope & tau\_1 = 0.10 & Mild-clustered & 0.999 & 0.0347 & 1.21\\
+Random slope & tau\_1 = 0.10 & Boundary-clustered & 1.000 & 0.0324 & 1.39\\
+Random slope & tau\_1 = 0.10 & Extreme-clustered & 1.000 & 0.0302 & 1.59\\
+Random slope & tau\_1 = 0.30 & Equal & 0.811 & 0.0671 & 1.00\\
+\addlinespace
+Random slope & tau\_1 = 0.30 & Mild-clustered & 0.787 & 0.0665 & 1.02\\
+Random slope & tau\_1 = 0.30 & Boundary-clustered & 0.823 & 0.0658 & 1.04\\
+Random slope & tau\_1 = 0.30 & Extreme-clustered & 0.805 & 0.0656 & 1.04\\
+Random slope & tau\_1 = 0.50 & Equal & 0.423 & 0.1032 & 1.00\\
+Random slope & tau\_1 = 0.50 & Mild-clustered & 0.445 & 0.1013 & 1.04\\
+\addlinespace
+Random slope & tau\_1 = 0.50 & Boundary-clustered & 0.437 & 0.1070 & 0.93\\
+Random slope & tau\_1 = 0.50 & Extreme-clustered & 0.463 & 0.1008 & 1.05\\
+Compound symmetry & tau\_0 = 5.0 & Equal & 1.000 & 0.0319 & 1.00\\
+Compound symmetry & tau\_0 = 5.0 & Mild-clustered & 1.000 & 0.0288 & 1.22\\
+Compound symmetry & tau\_0 = 5.0 & Boundary-clustered & 1.000 & 0.0272 & 1.38\\
+\addlinespace
+Compound symmetry & tau\_0 = 5.0 & Extreme-clustered & 1.000 & 0.0251 & 1.62\\
+AR(1) + error & rho = 0.8 & Equal & 0.919 & 0.0565 & 1.00\\
+AR(1) + error & rho = 0.8 & Mild-clustered & 0.938 & 0.0548 & 1.06\\
+AR(1) + error & rho = 0.8 & Boundary-clustered & 0.956 & 0.0508 & 1.24\\
+AR(1) + error & rho = 0.8 & Extreme-clustered & 0.948 & 0.0523 & 1.17\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Across 14 of the 15 non-baseline (structure, schedule) cells,
+moving from equal to mild-, boundary-, or extreme-clustered spacing
+increases empirical precision (relative efficiency vs.~equal
+spacing exceeds 1), corroborating -- with
+simulated finite-sample REML/GLS fits rather than the closed-form
+calculation alone -- the direction of the main comparison's finding
+across every covariance structure examined. The clustering
+advantage is largest under compound symmetry and the small-\(\tau_1\)
+random-slope structure (relative efficiency up to
+1.62 for extreme clustering), consistent
+with Table \ref{tab:scenario-grid}'s analytic prediction that the
+advantage is strongest when the random-slope variance is small
+relative to the residual variance. At \(\tau_1 = 0.50\), where that
+variance ratio is largest, the pattern is no longer monotonic and
+the boundary-clustered design's empirical SE
+(0.1070) is slightly \emph{larger} than
+equal spacing's (0.1032, relative
+efficiency 0.93); given each
+cell's Monte Carlo standard error of the empirical SE (on the order
+of 0.002 at this sample size, from the same formula as Section
+\ref{simulation-procedure}), this single reversal is consistent
+with Monte Carlo noise around a true relative efficiency close to 1
+rather than a genuine crossover, but it underscores that the
+clustering advantage is not guaranteed to hold once the
+random-slope variance is large relative to the residual variance --
+precisely the boundary case the analytic grid already flagged. The
+AR(1)-plus-error structure shows a smaller, non-monotonic advantage
+(extreme clustering is less efficient than boundary clustering,
+relative efficiency 1.17 vs.
+1.24), plausibly because packing
+visits very close together adds
+little independent information once residuals are themselves
+serially correlated at short lags. All 20 cells converged fully
+(1000/1000
+replications at minimum); estimated bias is negligible in every
+cell (magnitude below 0.004, smaller than its own MCSE in most
+cells), so REML estimation of the treatment-by-time interaction
+is not detectably biased by covariance misspecification or
+boundary clustering at this sample size.
 
 \subsection{Simulation procedure}\label{simulation-procedure}
 
@@ -764,26 +881,42 @@ excludes 1.
 Several caveats warrant mention. First, we assumed complete data
 with no dropout. In practice, attrition is common in
 longitudinal trials and may differentially affect designs that
-place observations at extreme time-points. Second, the data-
-generating model used independent random effects and
-homoscedastic residuals; more complex covariance structures
-(e.g., heterogeneous variances, serial correlation in residuals)
-could alter the relative performance of the two designs. Third,
-we considered only a linear treatment effect;\textsuperscript{\citeproc{ref-winkens2007polynomial}{8}} showed that optimal designs differ for
-polynomial effects of higher order.
+place observations at extreme time-points; adding a dropout
+mechanism to the simulation requires a design decision (MCAR/MAR,
+rate, whether attrition is tied to visit timing) not made here.
+Second, the main simulation's data-generating model used
+independent random effects and homoscedastic residuals, but
+Sections \ref{scenario-extension-analytic-only} and
+\ref{scenario-extension-monte-carlo} show, both analytically and
+by Monte Carlo simulation, that the clustered design's precision
+advantage is not an artifact of that specific structure: it holds
+under compound symmetry and under AR(1) plus measurement error as
+well, and across four visit schedules spanning a range of boundary
+clustering, although the advantage shrinks and became
+indistinguishable from Monte Carlo noise in one of 15 non-baseline
+cells as the random-slope variance grew large relative to the
+residual variance. Heterogeneous (non-constant) residual variances
+were not examined and could still alter the relative performance of
+the two designs. Third, we considered only a linear treatment
+effect;\textsuperscript{\citeproc{ref-winkens2007polynomial}{8}} showed that optimal designs differ
+for polynomial effects of higher order.
 
 In conclusion, three points merit emphasis. First, the placement
 of observation times in a longitudinal trial is a design
 decision with real consequences for statistical efficiency, and
 the default of equal spacing is not in general optimal. Second,
-the form of the covariance structure is critical: results that
-hold under compound symmetry may not carry over to random-slope
-models or AR(1) structures. Third, the robustness of these
-findings to dropout, covariance misspecification, and nonlinear
-treatment trajectories remains to be investigated. The maximin
-D-optimal framework of\textsuperscript{\citeproc{ref-ouwens2002maximin}{4}} and the Bayesian
-approach of\textsuperscript{\citeproc{ref-abebe2014bayesian}{10}} provide principled starting
-points for that work.
+the magnitude of the clustering advantage depends on the covariance
+structure and on how large the random-slope variance is relative to
+the residual variance, but across the structures and schedules
+examined here (random-slope, compound symmetry, and AR(1) plus
+measurement error; Sections
+\ref{scenario-extension-analytic-only}-\ref{scenario-extension-monte-carlo})
+the qualitative advantage of boundary clustering for the linear
+slope contrast is not specific to one structure. Third, the
+robustness of these findings to dropout, heterogeneous residual
+variances, and nonlinear treatment trajectories remains to be
+investigated. The maximin D-optimal framework of\textsuperscript{\citeproc{ref-ouwens2002maximin}{4}} and the Bayesian approach of\textsuperscript{\citeproc{ref-abebe2014bayesian}{10}}
+provide principled starting points for that work.
 
 \section{References}\label{references}
 

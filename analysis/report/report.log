@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.22)  20 AUG 2026 14:03
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.22)  20 AUG 2026 17:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1275,57 +1275,55 @@ LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 
 [2] [3] [4]
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 10.0pt on input line 441.
+(Font)              scaled to size 10.0pt on input line 450.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 7.0pt on input line 441.
+(Font)              scaled to size 7.0pt on input line 450.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 10.00092pt on input line 441.
+(Font)              scaled to size 10.00092pt on input line 450.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 7.00064pt on input line 441.
+(Font)              scaled to size 7.00064pt on input line 450.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 9.99893pt on input line 441.
+(Font)              scaled to size 9.99893pt on input line 450.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 6.99925pt on input line 441.
+(Font)              scaled to size 6.99925pt on input line 450.
 [5]
 File: report_files/figure-latex/design-visual-1.pdf Graphic file (type pdf)
 <use report_files/figure-latex/design-visual-1.pdf>
+[6] [7]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[6] [7]
-Overfull \hbox (8.9872pt too wide) in paragraph at lines 613--620
+[8]
+Overfull \hbox (8.9872pt too wide) in paragraph at lines 730--737
 \TU/lmtt/m/n/10.95 analytic_gls_se()\TU/lmr/m/n/10.95 ) live in \TU/lmtt/m/n/10
 .95 R/ \TU/lmr/m/n/10.95 as documented, unit-tested package functions (\TU/lmtt
 /m/n/10.95 inst/tinytest/\TU/lmr/m/n/10.95 )
  []
 
-
-Overfull \hbox (23.51782pt too wide) in paragraph at lines 657--670
+[9]
+Overfull \hbox (23.51782pt too wide) in paragraph at lines 774--787
 \TU/lmr/m/n/10.95 bootstrap interval to a single versioned artifact, \TU/lmtt/m
 /n/10.95 analysis/data/derived_data/sim_results.rds\TU/lmr/m/n/10.95 ,
  []
 
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[8]
+[10]
 File: report_files/figure-latex/density-plot-1.pdf Graphic file (type pdf)
 <use report_files/figure-latex/density-plot-1.pdf>
 File: report_files/figure-latex/se-boxplot-1.pdf Graphic file (type pdf)
 <use report_files/figure-latex/se-boxplot-1.pdf>
-[9] [10] [11] [12] (./report.aux)
+[11] [12] [13] [14] (./report.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 22621 strings out of 468168
- 414887 string characters out of 5432815
- 1013713 words of memory out of 5000000
- 50975 multiletter control sequences out of 15000+600000
+ 22624 strings out of 468168
+ 414945 string characters out of 5432815
+ 1018943 words of memory out of 5000000
+ 50978 multiletter control sequences out of 15000+600000
  638243 words of font info for 131 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  90i,12n,114p,1003b,596s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on report.pdf (12 pages).
+Output written on report.pdf (14 pages).
