@@ -5,27 +5,27 @@ author: "Ronald G. Thomas, Ph.D.\\thanks{Wertheim School of Public Health, UCSD;
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 abstract: |
   Observation times in longitudinal clinical trials are usually
-  spaced equally for administrative convenience, but optimal design
-  theory shows that placement affects the precision of estimated
-  treatment effects. We compare an equally spaced five-visit
-  schedule with a boundary-clustered schedule for a two-arm,
-  24-month trial with a linearly divergent treatment effect,
-  combining an exact generalized least squares (GLS) efficiency
-  calculation with a common-random-number Monte Carlo study (2000
-  paired replications) under a random-intercept, random-slope data
-  generating model. The analytic relative efficiency of the
-  clustered design is 1.06, and the paired simulation, after
-  recalibrating the effect size so power is informative rather than
-  at ceiling, reproduces this result (empirical relative efficiency
-  1.07, 95% bootstrap interval 1.06-1.09), confirming that the
-  precision advantage is real and not simulation noise. A subsequent
-  Monte Carlo grid crossing five covariance structures with four
-  visit schedules corroborates the direction of this finding in 14
-  of 15 non-baseline cells, with the advantage shrinking as the
-  random-slope variance grows large relative to the residual
-  variance. We do not claim optimality: the theoretically optimal
+  spaced equally for administrative convenience. However, optimal
+  design theory shows that placement affects the precision of
+  estimated treatment effects. We compare an equally spaced
+  five-visit schedule with a boundary-clustered schedule for a
+  two-arm, 24-month trial with a linearly divergent treatment
+  effect. We combine an exact generalized least squares (GLS)
+  efficiency calculation with a common-random-number Monte Carlo
+  study (2000 paired replications) under a random-intercept,
+  random-slope data generating model. The analytic relative
+  efficiency of the clustered design is 1.06. The paired simulation,
+  after we recalibrate the effect size so power is informative
+  rather than at ceiling, reproduces this result (empirical relative
+  efficiency 1.07, 95% bootstrap interval 1.06-1.09). That is, the
+  precision advantage appears real and not simulation noise. A
+  subsequent Monte Carlo grid crossing five covariance structures
+  with four visit schedules corroborates the direction of this
+  finding in 14 of 15 non-baseline cells. The advantage shrinks as
+  the random-slope variance grows large relative to the residual
+  variance. We do not claim optimality. The theoretically optimal
   design for this covariance structure is not computed here, and the
-  primary paired comparison uses only two designs. The contribution
+  primary paired comparison uses only two designs. Our contribution
   is a worked, fully reproducible demonstration of how much
   efficiency is at stake for one realistic configuration, and a
   template (`R/simulation.R`) for extending the comparison to
