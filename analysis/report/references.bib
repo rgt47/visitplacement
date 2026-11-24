@@ -65,7 +65,8 @@
   year      = {1991},
   volume    = {47},
   number    = {1},
-  pages     = {161--175}
+  pages     = {161--175},
+  doi       = {10.2307/2532504}
 }
 
 @book{atkinson1992optimum,
@@ -108,7 +109,7 @@
                individual linear and quadratic growth curves in linear
                mixed models},
   journal   = {Statistical Methods in Medical Research},
-  year      = {2008},
+  year      = {2009},
   volume    = {18},
   number    = {4},
   pages     = {397--419},
@@ -122,7 +123,7 @@
   title     = {Bayesian design for dichotomous repeated measurements
                with autocorrelation},
   journal   = {Statistical Methods in Medical Research},
-  year      = {2014},
+  year      = {2015},
   volume    = {24},
   number    = {5},
   pages     = {594--611},
@@ -146,32 +147,23 @@
                {R}---the \texttt{longpower} package and {Shiny} app},
   journal   = {The R Journal},
   year      = {2022},
+  volume    = {14},
+  number    = {1},
+  pages     = {264--282},
   doi       = {10.32614/RJ-2022-022}
 }
 
-% NOTE (2026-08-20 remediation, whitepaper minor issue 1): this
-% entry was incomplete (no journal/volume/pages) in the version of
-% this file actually used by report.Rmd. A web search found no
-% distinct standalone 2010 journal article or dissertation under
-% this exact title; the CRAN longpower package vignette carries the
-% identical title and Donohue as sole listed author (verified via
-% https://cran.r-project.org/web/packages/longpower/vignettes/longpower.html,
-% checked 2026-08-20), so it is cited here as a misc/vignette entry
-% rather than fabricating a journal, volume, or page range. The
-% four-author list below (Gamst, Thomas, Aisen in addition to
-% Donohue) is preserved from the original entry but is unverified
-% against this source; confirm before submission, or replace with
-% @iddi2022longpower above, which documents the same methodology in
-% a citable, DOI-bearing source.
+% Verified 2026-11-18 against the CRAN vignette page: sole author
+% Michael C. Donohue, vignette dated 2024-09-04, longpower 1.0.27.
+% The earlier four-author list could not be verified and was
+% removed. The citation key is kept for stability.
 @misc{donohue2010power,
-  author = {Donohue, Michael C. and Gamst, Anthony C. and
-            Thomas, Ronald G. and Aisen, Paul S.},
+  author = {Donohue, Michael C.},
   title  = {Power for Linear Models of Longitudinal Data with
             Applications to {Alzheimer's Disease} Phase {II} Study
             Design},
-  year   = {2010},
-  note   = {longpower R package vignette (author list for the
-            original 2010 version unverified); see
+  year   = {2024},
+  note   = {Vignette for the longpower R package, version 1.0.27;
             \url{https://cran.r-project.org/web/packages/longpower/vignettes/longpower.html}}
 }
 
@@ -186,4 +178,51 @@
   number    = {11},
   pages     = {2074--2102},
   doi       = {10.1002/sim.8086}
+}
+
+@article{raudenbush2001effects,
+  author    = {Raudenbush, Stephen W. and Liu, Xiao-Feng},
+  title     = {Effects of study duration, frequency of observation,
+               and sample size on power in studies of group
+               differences in polynomial change},
+  journal   = {Psychological Methods},
+  year      = {2001},
+  volume    = {6},
+  number    = {4},
+  pages     = {387--401},
+  doi       = {10.1037/1082-989X.6.4.387}
+}
+
+@article{galbraith2002guidelines,
+  author    = {Galbraith, Sally and Marschner, Ian C.},
+  title     = {Guidelines for the design of clinical trials with
+               longitudinal outcomes},
+  journal   = {Controlled Clinical Trials},
+  year      = {2002},
+  volume    = {23},
+  number    = {3},
+  pages     = {257--273},
+  doi       = {10.1016/S0197-2456(02)00205-2}
+}
+
+@book{berger2009introduction,
+  author    = {Berger, Martijn P. F. and Wong, Weng Kee},
+  title     = {An Introduction to Optimal Designs for Social and
+               Biomedical Research},
+  publisher = {Wiley},
+  year      = {2009},
+  doi       = {10.1002/9780470746912}
+}
+
+@article{zhao2022power,
+  author    = {Zhao, Yu and Edland, Steven D.},
+  title     = {Power formulas for mixed effects models with random
+               slope and intercept comparing rate of change across
+               groups},
+  journal   = {The International Journal of Biostatistics},
+  year      = {2022},
+  volume    = {18},
+  number    = {1},
+  pages     = {173--182},
+  doi       = {10.1515/ijb-2020-0107}
 }

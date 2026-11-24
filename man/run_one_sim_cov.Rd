@@ -52,6 +52,6 @@ correlation structure matched to the covariance family used to
 generate the data (compound symmetry or AR(1) plus measurement
 error), rather than a random-intercept, random-slope \code{nlme::lme()}
 model. Used for the compound-symmetry and AR(1)-plus-error cells
-of the full-factorial Monte Carlo grid (2026-08-16 review, issue
-2.4).
+of the Monte Carlo grid over covariance structure and visit
+schedule.
 }

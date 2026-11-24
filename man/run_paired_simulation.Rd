@@ -59,5 +59,5 @@ subject-level random effects and residual errors are reused for
 both designs (matched on subject and visit index), so that the
 Monte Carlo comparison of the two designs is a paired comparison
 with much smaller Monte Carlo error than two independent
-simulation arms (review issue 2.2).
+simulation arms.
 }

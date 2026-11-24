@@ -11,3 +11,7 @@
 | `report-2026-08-20-1754-6f48a5e-wip.pdf` | `~/prj/res/05-optimal-visit-placement/visitplacement/analysis/report/report.Rmd` | `6f48a5e-wip` | 2026-08-20 17:54 PDT |
 | `report-2026-08-20-1755-6f48a5e-wip.pdf` | `~/prj/res/05-optimal-visit-placement/visitplacement/analysis/report/report.Rmd` | `6f48a5e-wip` | 2026-08-20 17:55 PDT |
 | `report-2026-09-07-1157-d3db1ea-wip.pdf` | `~/prj/res/05-optimal-visit-placement/visitplacement/analysis/report/report.Rmd` | `d3db1ea-wip` | 2026-09-07 11:57 PDT |
+| `report-2026-11-19-1254-cddef1c-wip.pdf` | `~/prj/res/05-optimal-visit-placement/visitplacement/analysis/report/report.Rmd` | `cddef1c-wip` | 2026-11-19 12:54 PST |
+| `report-2026-11-19-1845-cddef1c-wip.pdf` | `~/prj/res/05-optimal-visit-placement/visitplacement/analysis/report/report.Rmd` | `cddef1c-wip` | 2026-11-19 18:45 PST |
+| `report-2026-11-23-1247-cddef1c-wip.pdf` | `~/prj/res/05-optimal-visit-placement/visitplacement/analysis/report/report.Rmd` | `cddef1c-wip` | 2026-11-23 12:47 PST |
+| `report-2026-11-23-1247-cddef1c-wip.pdf` | `~/prj/res/05-optimal-visit-placement/visitplacement/analysis/report/report.Rmd` | `cddef1c-wip` | 2026-11-23 12:47 PST |

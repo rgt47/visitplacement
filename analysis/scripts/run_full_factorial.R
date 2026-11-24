@@ -1,6 +1,6 @@
 # Full-factorial Monte Carlo grid over covariance structure and
 # visit schedule for the visit-placement comparison reported in
-# analysis/report/report.Rmd (2026-08-16 review, issue 2.4).
+# analysis/report/report.Rmd.
 #
 # This extends the earlier analytic-only scenario grid
 # (run_scenario_grid.R) to a genuine Monte Carlo comparison: for
@@ -11,12 +11,10 @@
 # finite-sample REML/inference behavior is assessed, not just the
 # closed-form asymptotic relative efficiency.
 #
-# Scope note: this grid deliberately excludes dropout. Adding a
-# dropout mechanism requires a design decision (MCAR/MAR, rate,
-# whether attrition is tied to visit timing) that only the author
-# should make; see docs/pub_review_remediation_2026-08-20.md,
-# "Deferred". This script factorizes over covariance structure and
-# visit schedule only, all under complete data.
+# Scope note: this grid assumes complete data. Dropout is treated
+# analytically (MCAR, monotone) by analytic_gls_se_dropout() in
+# R/design.R, not by simulation. Schedules within a structure are
+# drawn from independent seeds, not common random numbers.
 #
 # Usage:
 #   Rscript analysis/scripts/run_full_factorial.R [n_sims]

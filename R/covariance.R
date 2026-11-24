@@ -5,9 +5,8 @@
 #' covariance matrix, so the treatment-by-time interaction can be
 #' compared across covariance structures (random-slope, compound
 #' symmetry, AR(1) plus error) without re-deriving the information
-#' matrix each time. Added for the analytic scenario extension in
-#' `analysis/scripts/run_scenario_grid.R` (2026-08-16 review, issue
-#' 2.4).
+#' matrix each time. Used by the analytic scenario grid in
+#' `analysis/scripts/run_scenario_grid.R`.
 #'
 #' @param times Numeric vector of visit times.
 #' @param n_per_group Integer, subjects per arm.

@@ -6,8 +6,7 @@
 # designs, plus a small analytic scenario grid over the random-slope
 # variance. Output is saved as versioned .rds artifacts under
 # analysis/data/derived_data/ so the manuscript can read real
-# numbers via inline `r` expressions instead of hardcoded prose
-# (2026-08-16 review, issue 2.8).
+# numbers via inline `r` expressions instead of hardcoded prose.
 #
 # Usage:
 #   Rscript analysis/scripts/run_simulation.R [n_sims]
@@ -24,10 +23,9 @@ n_per_group <- 50
 beta_0 <- 50
 beta_1 <- -1.0
 beta_2 <- 0
-# Recalibrated from 0.5 to 0.19 so the equal-spacing design sits
-# near 80% power instead of the ceiling (review issue 2.1); see
-# report.Rmd, "Recalibration of the treatment effect" for the power
-# calculation that motivates this value.
+# Chosen so the equal-spacing design sits near 80% analytic power
+# rather than at the ceiling; see report.Rmd, "Choice of the
+# treatment effect", for the power calculation behind this value.
 beta_3 <- 0.19
 tau_0 <- 5.0
 tau_1 <- 0.3
@@ -102,8 +100,7 @@ analytic_se_clustered <- analytic_gls_se(
 # Paired bootstrap for the relative efficiency (ratio of empirical
 # variances). Resampling is over replication index (not individual
 # estimates), which respects the CRN pairing and gives a Monte
-# Carlo-error-aware interval for the efficiency contrast (review
-# issue 2.2).
+# Carlo-error-aware interval for the efficiency contrast.
 both_ok <- !is.na(paired$results_a$est) & !is.na(paired$results_b$est)
 eq_est <- paired$results_a$est[both_ok]
 cl_est <- paired$results_b$est[both_ok]

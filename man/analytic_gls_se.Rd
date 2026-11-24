@@ -26,11 +26,12 @@ Numeric scalar, the GLS standard error of the
 treatment-by-time interaction coefficient.
 }
 \description{
-Computes the exact large-sample GLS standard error of
-\eqn{\hat\beta_3} under the random-intercept, random-slope data
-generating model of \code{\link[=simulate_trial]{simulate_trial()}}, for a balanced two-arm
-design with the given visit times. This is the closed-form
-target that the Monte Carlo simulation estimates; see the
-Reproducibility notes in \code{analysis/report/report.Rmd} (issue 2.3
-of the 2026-08-16 review) for the derivation.
+Computes the GLS standard error of \eqn{\hat\beta_3}, exact for
+known variance components, under the random-intercept,
+random-slope data generating model of \code{\link[=simulate_trial]{simulate_trial()}}, for a
+balanced two-arm design with the given visit times. This is the
+closed-form target that the Monte Carlo simulation estimates; see
+the Methods section of \code{analysis/report/report.Rmd} for the
+derivation and \code{\link[=closed_form_se]{closed_form_se()}} for the equivalent one-line
+form.
 }

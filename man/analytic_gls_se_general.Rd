@@ -24,7 +24,6 @@ Generalizes \code{\link[=analytic_gls_se]{analytic_gls_se()}} to accept any k x 
 covariance matrix, so the treatment-by-time interaction can be
 compared across covariance structures (random-slope, compound
 symmetry, AR(1) plus error) without re-deriving the information
-matrix each time. Added for the analytic scenario extension in
-\code{analysis/scripts/run_scenario_grid.R} (2026-08-16 review, issue
-2.4).
+matrix each time. Used by the analytic scenario grid in
+\code{analysis/scripts/run_scenario_grid.R}.
 }

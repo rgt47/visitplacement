@@ -130,13 +130,14 @@ run_one_sim <- function(times, n_per_group, beta_0, beta_1, beta_2,
 #' Analytic (generalized least squares) standard error of the
 #' treatment-by-time interaction
 #'
-#' Computes the exact large-sample GLS standard error of
-#' \eqn{\hat\beta_3} under the random-intercept, random-slope data
-#' generating model of [simulate_trial()], for a balanced two-arm
-#' design with the given visit times. This is the closed-form
-#' target that the Monte Carlo simulation estimates; see the
-#' Reproducibility notes in `analysis/report/report.Rmd` (issue 2.3
-#' of the 2026-08-16 review) for the derivation.
+#' Computes the GLS standard error of \eqn{\hat\beta_3}, exact for
+#' known variance components, under the random-intercept,
+#' random-slope data generating model of [simulate_trial()], for a
+#' balanced two-arm design with the given visit times. This is the
+#' closed-form target that the Monte Carlo simulation estimates; see
+#' the Methods section of `analysis/report/report.Rmd` for the
+#' derivation and [closed_form_se()] for the equivalent one-line
+#' form.
 #'
 #' @param times Numeric vector of visit times.
 #' @param n_per_group Integer, subjects per arm.
@@ -174,7 +175,7 @@ analytic_gls_se <- function(times, n_per_group, tau_0, tau_1,
 #' both designs (matched on subject and visit index), so that the
 #' Monte Carlo comparison of the two designs is a paired comparison
 #' with much smaller Monte Carlo error than two independent
-#' simulation arms (review issue 2.2).
+#' simulation arms.
 #'
 #' @param times_a,times_b Numeric vectors of visit times for the two
 #'   designs, of equal length `k`.
@@ -243,9 +244,9 @@ run_paired_simulation <- function(times_a, times_b, n_per_group,
 #' any k x k within-subject covariance matrix (e.g. compound
 #' symmetry or AR(1) plus measurement error, from `R/covariance.R`)
 #' rather than assuming the random-intercept, random-slope
-#' decomposition. Added for the full-factorial Monte Carlo grid over
-#' covariance structure and visit schedule (2026-08-16 review, issue
-#' 2.4; see `analysis/scripts/run_full_factorial.R`).
+#' decomposition. Used by the Monte Carlo grid over covariance
+#' structure and visit schedule (see
+#' `analysis/scripts/run_full_factorial.R`).
 #'
 #' @param times Numeric vector of visit times (months).
 #' @param n_per_group Integer, number of subjects per arm.
@@ -289,8 +290,8 @@ simulate_trial_cov <- function(times, n_per_group, beta_0, beta_1,
 #' generate the data (compound symmetry or AR(1) plus measurement
 #' error), rather than a random-intercept, random-slope `nlme::lme()`
 #' model. Used for the compound-symmetry and AR(1)-plus-error cells
-#' of the full-factorial Monte Carlo grid (2026-08-16 review, issue
-#' 2.4).
+#' of the Monte Carlo grid over covariance structure and visit
+#' schedule.
 #'
 #' @inheritParams simulate_trial_cov
 #' @param structure Character, one of `"compound_symmetry"` or

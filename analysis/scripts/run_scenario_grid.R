@@ -7,14 +7,12 @@
 # across a small grid of covariance structures and random-slope
 # variances, using the closed-form calculation in
 # R/covariance.R -- no Monte Carlo simulation is needed because the
-# quantity of interest (asymptotic relative efficiency) has a known
-# closed form (2026-08-16 review, issue 2.3).
+# quantity of interest (relative efficiency, exact for known
+# variance components) has a closed form.
 #
-# This is explicitly NOT the full factorial simulation grid called
-# for by the review (issue 2.4), which would additionally vary
-# sample size, dropout, and simulate finite-sample REML behavior
-# for each cell. That remains a documented TODO; see
-# docs/pub_review_remediation_*.md.
+# The Monte Carlo counterpart over covariance structure and visit
+# schedule is analysis/scripts/run_full_factorial.R; the analytic
+# dropout calculation is analytic_gls_se_dropout() in R/design.R.
 #
 # Usage: Rscript analysis/scripts/run_scenario_grid.R
 

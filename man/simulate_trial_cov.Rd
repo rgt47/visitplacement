@@ -33,7 +33,7 @@ Generalizes \code{\link[=simulate_trial]{simulate_trial()}} to draw subject-leve
 any k x k within-subject covariance matrix (e.g. compound
 symmetry or AR(1) plus measurement error, from \code{R/covariance.R})
 rather than assuming the random-intercept, random-slope
-decomposition. Added for the full-factorial Monte Carlo grid over
-covariance structure and visit schedule (2026-08-16 review, issue
-2.4; see \code{analysis/scripts/run_full_factorial.R}).
+decomposition. Used by the Monte Carlo grid over covariance
+structure and visit schedule (see
+\code{analysis/scripts/run_full_factorial.R}).
 }
